@@ -1,0 +1,55 @@
+/*
+ * Architecture Repository: what the document adds to the Zephyr look, such as the decision statuses
+ * as Bootstrap badges. Appended after the Zephyr bridge and before brand.css.
+ */
+
+/* Decision statuses: [.decided]#DECIDED#, [.pending]#PENDING# and so on */
+.decided, .proposed, .pending, .deferred, .rejected, .superseded,
+.fact, .assumption, .decision {
+	display: inline-block;
+	padding: 0.15em 0.45em;
+	border-radius: var(--bs-border-radius-sm);
+	font-size: 0.72em;
+	font-weight: 700;
+	letter-spacing: 0.03em;
+	vertical-align: 0.1em;
+	color: #fff;
+	white-space: nowrap;
+}
+
+.decided, .fact {
+	background-color: #2e8540;
+}
+
+.proposed {
+	background-color: #3459e6;
+}
+
+.decision {
+	background-color: var(--bs-primary);
+}
+
+.pending, .assumption {
+	background-color: #b26a00;
+}
+
+.deferred {
+	background-color: #6c757d;
+}
+
+.rejected {
+	background-color: #b91c1c;
+}
+
+.superseded {
+	background-color: #6c757d;
+	font-style: italic;
+	text-decoration: line-through;
+}
+
+
+/* Diagrams as code are wide: let them use the whole content column */
+.imageblock .content svg, .imageblock .content object {
+	max-width: 100%;
+	height: auto;
+}

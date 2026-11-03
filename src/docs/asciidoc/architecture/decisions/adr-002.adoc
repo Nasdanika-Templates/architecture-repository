@@ -1,0 +1,35 @@
+[#adr-002,reftext=ADR-002]
+= ADR-002: Solution Pattern
+
+// The choice is bound to the evaluation in src/evaluations/solution-pattern.yml by the alternative's
+// ID, custom-rag: the caution below appears when the evaluation stops ranking it first.
+ifeval::[{eval-solution-pattern-custom-rag-rank} > 1]
+[CAUTION]
+====
+Revisit: the evaluation now ranks {eval-solution-pattern-custom-rag} number
+{eval-solution-pattern-custom-rag-rank}, and {eval-solution-pattern-first} first
+(<<solution-patterns>>).
+====
+endif::[]
+
+Status:: [.proposed]#PROPOSED# 2026-10-30, drafted by the AI assistant and the architects, for the
+Architecture Review Board.
+
+Context:: The assistant must answer from approved content and the customer's own data, with the
+control over grounding, auditability and data handling that a regulated, customer-facing channel
+requires, and within a time frame the sponsor finds acceptable.
+
+Alternatives:: Evaluated in <<solution-patterns>>, with criteria weighted by AHP. Ranking:
+{eval-solution-pattern-ranking}.
+ifdef::eval-solution-pattern-close[]
+The top two are {eval-solution-pattern-margin} apart, a close call.
+endif::[]
+
+Decision:: Proposed: {eval-solution-pattern-custom-rag}, on Azure OpenAI and Azure AI Search, with
+Azure AI Content Safety and Azure Cosmos DB; {eval-solution-pattern-managed-agent} as the fallback.
+
+Consequences:: The bank builds and operates the Chat Orchestrator (WP-3) and owns its guardrails.
+The answer pattern, retrieval plus read-only tools, keeps personal data out of the index and keeps
+the existing entitlements in force.
+
+Related:: <<application>>, <<oq-08>>, <<adr-007>>.

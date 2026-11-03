@@ -1,0 +1,15 @@
+[#adr-010,reftext=ADR-010]
+= ADR-010: The Chat Is Part of the Banking Apps
+
+Status:: [.decided]#DECIDED# 2026-10-28, Head of Digital Channels, with the {system} product owner,
+at the kick-off (<<meeting-2026-10-28-kickoff>>). Supersedes <<adr-009>>.
+
+Context:: Account questions (UC-2) need the customer's session and existing entitlements.
+
+Decision:: The chat is a panel in the single-page application and a screen in the mobile app,
+available to signed-in customers only.
+
+Consequences:: The chat ships with the {system}'s release train (WP-5); the orchestrator receives
+the customer's token from the apps and passes it to the API Application.
+
+Related:: <<containers>>.

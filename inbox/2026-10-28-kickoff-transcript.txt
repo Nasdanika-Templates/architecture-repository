@@ -1,0 +1,49 @@
+Kick-off: AI Chat for the Internet Banking System
+2026-10-28, Microsoft Teams, 60 minutes. Transcript reviewed before it was added to the repository:
+participants replaced by their roles, small talk and one personal remark removed, product names corrected.
+
+[00:00:12] Head of Digital Channels: Thanks for joining. The goal today is to agree what we are building and what we are not. Our contact center keeps answering the same questions: fees, cards, "what is this transaction". Most of the answers are already on our help pages. Customers don't find them.
+
+[00:01:05] Contact Center Lead: I'd say a large part of our chat and phone volume is routine. I don't have the exact split by topic, though. We'd need to pull a month of contacts and classify them.
+
+[00:01:40] Head of Digital Channels: Let's do that. Contact Center owns it.
+
+[00:02:10] Enterprise Architect: On the platform side, there is nothing to discuss on the model source. Azure OpenAI in our tenant is the approved source of language models, that's the cloud strategy. Anything else needs an exception, and I'd rather we didn't start with one.
+
+[00:02:45] Head of Digital Channels: Agreed, Azure OpenAI it is.
+
+[00:03:20] Information Security Lead: And everything stays in our regions, private endpoints, no public network access. That's the landing zone standard, not a project choice.
+
+[00:04:05] IBS Product Owner: The pre-study said a standalone chat web app, so we wouldn't depend on our release train. I don't think that works anymore. If the assistant should explain someone's transactions, it needs their session. A separate app means a separate sign-in and a separate path to the API.
+
+[00:04:50] Head of Digital Channels: Then the chat goes into the web app and the mobile app, signed-in customers only. We drop the standalone app.
+
+[00:05:30] Head of Digital Channels: Next: can it do things? Payments, card freezes?
+
+[00:05:45] Information Security Lead: Not in the first release, please. A model that can move money is a different risk conversation, and we'd need strong authentication inside the chat.
+
+[00:06:10] Head of Digital Channels: Fine. First release is read-only. Answers and explanations only.
+
+[00:06:40] Contact Center Lead: Someone suggested training a model on our chat transcripts so it sounds like us.
+
+[00:06:55] Data Protection Officer: Those transcripts are full of personal data. And agents' answers aren't approved content; some of them are wrong. I'd advise against.
+
+[00:07:20] Head of Digital Channels: Then no fine-tuning on transcripts. We use the approved content.
+
+[00:08:00] Contact Center Lead: When the assistant can't help, it must hand over to us with the conversation so far. Our platform should accept chats from an external channel, but I'd want to confirm with the vendor.
+
+[00:08:40] Head of Digital Channels: What about voice? Many of our customers call.
+
+[00:08:55] Enterprise Architect: Voice adds speech, telephony, voice spoofing. I'd do it after the chat is live and we know its resolution rate.
+
+[00:09:15] Head of Digital Channels: OK, voice later, after general availability.
+
+[00:10:00] Data Protection Officer: How long do we keep conversations? That depends on the records class. I need to check with Records Management.
+
+[00:10:30] Model Risk Manager: And we need to determine whether this is a model under our policy. If it is, it needs independent validation before launch. I can't answer that today.
+
+[00:11:05] Head of Digital Channels: Languages? English first. Spanish probably later, I don't know when.
+
+[00:11:40] Enterprise Architect: For the solution pattern, I'll ask the architects to lay out the alternatives with criteria, a custom orchestrator, the managed agent service, Copilot Studio, a vendor product, and bring a recommendation to the review board. Same for the models.
+
+[00:12:10] Head of Digital Channels: Good. Let's meet again in two weeks.

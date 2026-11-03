@@ -1,0 +1,93 @@
+# The chat model: direct weights, alternatives rated 1-5.
+# The scores are the AI assistant's draft, reviewed by the architects; the evaluation on the golden
+# question set replaces the groundedness, safety, latency and tool-calling scores with measurements.
+title: Chat model
+method: direct
+close-margin: 0.25
+
+criteria:
+  - id: groundedness
+    name: Groundedness and instruction following
+    description: Answers only from the passages and tool results
+  - id: safety
+    name: Safety
+    description: Content filters, prompt shields, refusal behavior
+  - id: latency
+    name: Latency
+    description: Time to first token and to a complete answer
+  - id: cost
+    name: Cost per conversation
+    description: At the expected volume
+  - id: tools
+    name: Tool-calling reliability
+    description: Calls the right read-only tool with the right arguments
+  - id: availability
+    name: Availability within ADR-001
+    description: Available in Azure OpenAI in the bank's regions
+  - id: lifecycle
+    name: Lifecycle
+    description: Expected support horizon
+
+weights:
+  groundedness: 25
+  safety: 15
+  latency: 15
+  cost: 15
+  tools: 15
+  availability: 10
+  lifecycle: 5
+
+alternatives:
+  - id: gpt-41
+    label: M1
+    name: GPT-4.1
+    description: Azure OpenAI; a large general-purpose model, strong at following instructions and calling tools.
+    scores:
+      groundedness: 5
+      safety: 5
+      latency: 3
+      cost: { score: 2, reason: "Several times the cost per token of the small models." }
+      tools: 5
+      availability: 4
+      lifecycle: 3
+  - id: gpt-41-mini
+    label: M2
+    name: GPT-4.1 mini
+    description: Azure OpenAI; smaller, faster and cheaper.
+    scores:
+      groundedness: { score: 4, reason: "Good, but more likely than M1 to drift from the passages on long contexts." }
+      safety: 5
+      latency: 5
+      cost: 5
+      tools: 4
+      availability: 5
+      lifecycle: 3
+  - id: gpt-5-mini
+    label: M3
+    name: GPT-5 mini
+    description: Azure OpenAI; a newer, smaller reasoning model.
+    scores:
+      groundedness: 5
+      safety: 5
+      latency: { score: 3, reason: "Reasoning adds time before the first token." }
+      cost: 4
+      tools: 5
+      availability: { score: 3, reason: "Not yet in every region the bank uses." }
+      lifecycle: 4
+  - id: phi-4
+    label: M4
+    name: Phi-4
+    description: A small open-weight model through Azure AI Foundry, outside Azure OpenAI.
+    scores:
+      groundedness: 3
+      safety: 3
+      latency: 4
+      cost: 5
+      tools: { score: 2, reason: "Weaker at choosing and filling tool calls." }
+      availability: { score: 3, reason: "Outside Azure OpenAI: needs an exception to ADR-001." }
+      lifecycle: 3
+
+scenarios:
+  - id: groundedness-first
+    name: Groundedness over cost
+    weights: { groundedness: 40, cost: 0 }

@@ -1,0 +1,80 @@
+[#prompts]
+= Prompts
+
+The prompts are in `prompts/`, as Markdown, ready to paste into an assistant. They are included here
+so that the published document records how it was produced. Improve them as you learn, in the
+repository, where the improvement is versioned and shared.
+
+[#initial-prompt]
+== Initial Architecture Documentation
+
+The prompt template for a new project. Fill in the placeholders, put the sources in `inbox/`, and
+give it to an assistant that can edit the repository and run the build. Expect a first draft of
+every chapter of Part II, with diagrams, alternatives, ADRs and registers, in one session; then
+expect to spend real time reviewing it.
+
+.prompts/initial-architecture.md
+[source,markdown]
+----
+include::{repository-root}/prompts/initial-architecture.md[]
+----
+
+[#sample-prompt]
+== Sample: {system} {feature}
+
+The template filled in for the sample in <<architecture>>: the {system} of the C4 model's example
+as the context, and an {feature} on Azure OpenAI as the new capability. It asks the assistant to
+identify alternatives and criteria, and to rank the alternatives, for the solution architecture,
+the embedding model and the chat model.
+
+.prompts/sample-ibs-ai-chat.md
+[source,markdown]
+----
+include::{repository-root}/prompts/sample-ibs-ai-chat.md[]
+----
+
+[#poc-prompt]
+== Proof of Concept
+
+A proof of concept or a spike as an architecture project (<<pocs>>): the question and what would
+settle it first, then the code with its tests, the measurements as an evaluation, and a recommendation.
+
+.prompts/proof-of-concept.md
+[source,markdown]
+----
+include::{repository-root}/prompts/proof-of-concept.md[]
+----
+
+[#meeting-notes-prompt]
+== Meeting Notes
+
+Converts a reviewed transcript in `inbox/` to a meeting note (<<meeting-notes-workflow>>).
+
+.prompts/meeting-notes.md
+[source,markdown]
+----
+include::{repository-root}/prompts/meeting-notes.md[]
+----
+
+[#update-prompt]
+== Updating the Repository
+
+Brings the rest of the repository in line with new information (<<review-and-update>>).
+
+.prompts/update-repository.md
+[source,markdown]
+----
+include::{repository-root}/prompts/update-repository.md[]
+----
+
+[#prompt-tips]
+== Tips
+
+* *Point at files, not at memory.* "Read `inbox/...`" beats pasting, and the file stays as the
+  source.
+* *One concern per session.* Convert the meeting, review and commit; then update the repository,
+  review and commit. Smaller diffs are reviewed better.
+* *Ask for the uncertainty.* End with "what were you unsure about?" The answer is often the most
+  useful part.
+* *Make the build the referee.* Ask the assistant to run `mvn clean package` and fix what fails.
+  A green build does not prove the content right, but a red one proves it wrong.

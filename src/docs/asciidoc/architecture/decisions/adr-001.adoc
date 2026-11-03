@@ -1,0 +1,23 @@
+[#adr-001,reftext=ADR-001]
+= ADR-001: Azure OpenAI as the Source of Language Models
+
+Status:: [.decided]#DECIDED# 2026-10-28, Enterprise Architecture, confirmed at the kick-off
+(<<meeting-2026-10-28-kickoff>>).
+
+Context:: The bank's cloud strategy names Azure as the strategic cloud and Azure OpenAI as the
+approved source of large language models; other sources need an exception. Customer data must stay
+in the bank's tenant and regions.
+
+Alternatives::
+* Azure OpenAI in the bank's tenant.
+* Other models through Azure AI Foundry, by exception.
+* Model APIs outside Azure.
+* Self-hosted open-weight models.
+
+Decision:: Use Azure OpenAI deployments in the bank's tenant for the chat and embedding models.
+
+Consequences:: The model choices in <<embedding-models>> and <<chat-models>> are made within Azure
+OpenAI; an alternative outside it needs an exception to this ADR. The project inherits the bank's
+Azure OpenAI configuration for data handling (<<a-02>>) and its quota process.
+
+Related:: <<vision-constraints>>, <<oq-02>>.

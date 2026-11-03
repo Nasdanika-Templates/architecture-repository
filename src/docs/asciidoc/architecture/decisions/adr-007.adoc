@@ -1,0 +1,22 @@
+[#adr-007,reftext=ADR-007]
+= ADR-007: Azure AI Search as the Content Index
+
+Status:: [.proposed]#PROPOSED# 2026-10-30, for the Architecture Review Board.
+
+Context:: The orchestrator needs hybrid retrieval, keyword and vector, with metadata filters and
+private networking, at a content size of a few thousand pages.
+
+Alternatives::
+* Azure AI Search.
+* Vector search in Azure Cosmos DB, which also holds the conversations.
+* Azure Database for PostgreSQL with pgvector.
+
+Decision:: Proposed: Azure AI Search, for its hybrid retrieval with semantic ranking, its
+integration with Azure OpenAI, and the bank's existing use of it. The alternatives were not
+evaluated formally: the content is small, and the team's experience decided. Not every decision
+needs an evaluation file.
+
+Consequences:: One more managed service to secure and operate. The index is rebuilt from the content
+at any time, so it holds nothing that is not elsewhere.
+
+Related:: <<adr-002>>, <<ingestion>>.

@@ -1,0 +1,13 @@
+[#adr-009,reftext=ADR-009]
+= ADR-009: A Standalone Chat Web Application
+
+Status:: [.superseded]#SUPERSEDED# 2026-10-28 by <<adr-010>>. Originally [.decided]#DECIDED#
+2026-09-15 by Digital Channels, in the pre-study.
+
+Context:: The pre-study considered a chat web application, separate from the {system}, to be
+delivered independently of the {system}'s release train.
+
+Decision:: A standalone chat application, linked from the bank's web site.
+
+Why superseded:: Answers about accounts need the customer's signed-in session; a separate
+application would need its own sign-in and its own path to the API Application. See <<adr-010>>.

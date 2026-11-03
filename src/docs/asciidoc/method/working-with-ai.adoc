@@ -1,0 +1,100 @@
+[#working-with-ai]
+= Working with an AI Assistant
+
+The assistant works in the repository: an IDE assistant such as GitHub Copilot or Claude Code in
+Visual Studio Code, or any assistant that can read and edit files. It reads the sources, the prompts
+and the notes, edits the AsciiDoc, and runs the build to check its work. You review its changes in
+Git and commit them.
+
+[#new-information]
+== Giving It New Information
+
+New information reaches the repository in one of two ways.
+
+In the prompt::
+For something short and one-off: "The steering committee moved go-live to Q3; update the roadmap
+and anything that depends on it." The prompt goes into the commit message, so the information is
+not lost (<<commits>>).
+
+As a file in the repository::
+For anything longer, or anything that should be kept as evidence: meeting notes, a transcript, an
+email thread, a vendor's answers to a questionnaire, a policy excerpt. Put the raw file in `inbox/`,
+then ask the assistant to work from it. The raw file is the source that facts in the document can
+cite.
+
+[#meeting-notes-workflow]
+== Working with Meeting Notes
+
+Meetings are where most architecture information is produced and most of it is lost. With a
+transcript and an assistant, little needs to be lost.
+
+. *Transcribe.* Turn on transcription in Microsoft Teams (or your meeting tool), with the consent the
+  participants and your policies require. Download the transcript after the meeting.
+. *Review.* Read the transcript before it goes anywhere. Remove what must not be stored: personal
+  remarks, confidential matters out of the project's scope. Fix the names of systems and terms that
+  the transcription got wrong.
+. *Add to the repository.* Save the reviewed transcript in `inbox/`, named by date and subject, for
+  example `inbox/2026-10-28-kickoff-transcript.txt`.
+. *Convert to AsciiDoc.* Ask the assistant to convert it, with the prompt in
+  <<meeting-notes-prompt>>: a summary, then the facts, assumptions, decisions, open questions and
+  actions, each traceable to the transcript.
+. *Add to the document tree.* The assistant saves the note under
+  `src/docs/asciidoc/appendices/meeting-notes/` and includes it from <<meeting-notes>>. The sample
+  kick-off in <<meeting-2026-10-28-kickoff>> was produced this way from
+  `inbox/2026-10-28-kickoff-transcript.txt`.
+
+[#review-and-update]
+== Reviewing and Updating the Repository
+
+A meeting note is only useful once the rest of the document reflects it. After the conversion, ask
+the assistant to review the whole repository in the light of the new information (the prompt is in
+<<update-prompt>>):
+
+* add the new assumptions to <<assumptions>> and the new open questions to <<open-questions>>;
+* close the open questions the meeting answered, and validate or invalidate assumptions;
+* record decisions in <<decision-log>>, with the status the meeting actually reached;
+* update the sections whose content changed, and the diagrams with them;
+* list anything that now contradicts something else.
+
+Then run the build. The build fails on a broken cross-reference or a missing include, so a section
+the assistant renamed or removed is caught at once (<<compiled>>).
+
+[#review-changes]
+== Reviewing the Assistant's Changes
+
+Review in Git, not in the assistant's summary. The Source Control view of Visual Studio Code, or any
+Git client, shows every changed file side by side with its previous version. Read the diff of every
+file. In particular, look for:
+
+* statements that changed kind, an assumption that turned into a fact without a source;
+* decisions whose status moved without a decision having been made;
+* numbers, names and dates, the details assistants get confidently wrong;
+* text that was removed rather than changed.
+
+Discard what is wrong (`git restore` or the Discard action), fix what is close, and ask the
+assistant to redo what is far off. Then open the built HTML and look at the result, the diagrams in
+particular.
+
+[#commits]
+== Committing
+
+Make a dedicated commit for each significant change, such as a converted meeting note and the
+updates that follow from it, and use the prompt, or a summary of it, as the commit message:
+
+----
+Kick-off 2026-10-28: scope, constraints, first decisions
+
+Prompt: Convert inbox/2026-10-28-kickoff-transcript.txt to a meeting note,
+then update the repository: assumptions, open questions, decision log,
+vision and context. Flag contradictions.
+
+Reviewed: kept ADR-002 as PROPOSED, the meeting did not decide it.
+----
+
+The history then reads as the story of the architecture: what was learned, when, from whom and
+what changed because of it. `git log` on a section shows why it says what it says, and `git blame`
+shows which commit, and so which prompt and which meeting, put each line there.
+
+Small fixes, such as typos, need no ceremony. Tag the commits that are published for review or
+approval, for example `v2026.11.0`, so that the version a decision was approved against can be
+rebuilt at any time.

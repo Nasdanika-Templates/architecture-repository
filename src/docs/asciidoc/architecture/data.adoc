@@ -1,0 +1,73 @@
+[#data]
+= Data Architecture
+
+_ADM Phase C. CPMAI Phases II and III, Data Understanding and Data Preparation._
+
+[#data-sources]
+== Data the Assistant Uses
+
+[cols="2,2,2,2,2"]
+|===
+|Data |Source |Owner |Classification |How it is used
+
+|Help and product content
+|Content Management System
+|Digital Channels
+|Public
+|Ingested, chunked, embedded and indexed; retrieved to ground answers.
+
+|Fee schedules and terms
+|Content Management System
+|Product teams
+|Public
+|As above; [.assumption]#ASSUMPTION# kept current by the publishing process (<<a-03>>).
+
+|Accounts and transactions
+|Mainframe, through the API application
+|Retail Banking
+|Confidential, personal
+|Retrieved at question time by a tool call, for the signed-in customer only; never indexed.
+
+|Conversations
+|The chat itself
+|Digital Channels
+|Confidential, personal
+|Stored for history, handover, oversight and complaints; retention per <<oq-04>>.
+
+|Evaluation data
+|Curated by the project
+|AI product owner
+|Internal
+|The golden question set and expected answers (<<evaluation-plan>>).
+|===
+
+[#data-principles]
+== Principles
+
+* *Index the public, fetch the personal.* Only approved content goes into the vector index.
+  Customer data is fetched per question, through the API application, under the customer's own
+  session, and is never embedded or indexed. This keeps the index free of personal data and keeps
+  the existing entitlements in force (<<adr-002>>).
+* *Nothing trains a model.* Prompts, completions and conversations are not used to train or
+  fine-tune models (<<adr-006>>). [.assumption]#ASSUMPTION# The bank's Azure OpenAI agreement and
+  configuration exclude use of the data by the provider for training, and abuse monitoring is
+  configured per the bank's policy (<<a-02>>).
+* *Minimize what is logged.* Telemetry carries identifiers and metrics, not message text; the
+  conversation store is the only place the text is kept.
+
+[#ingestion]
+== Content Ingestion
+
+Published content is exported from the Content Management System, split into passages along its
+headings, embedded with the chosen embedding model (<<embedding-models>>) and indexed with its
+metadata: product, audience, effective date and URL. Re-ingestion runs on every publication.
+Content that is withdrawn is removed from the index in the same run, so the assistant cannot cite
+it.
+
+ifdef::editor-notes[]
+[IMPORTANT,caption="Editor's note"]
+====
+Chunk size and overlap are tuning parameters; record the values chosen by the evaluation, not
+guesses. Add a data flow diagram once the CMS export format is known (<<oq-03>>).
+====
+endif::[]

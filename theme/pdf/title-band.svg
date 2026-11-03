@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="8.5in" height="11in" viewBox="0 0 816 1056">
+  <!-- The title page: a band of the brand's primary color across the top third, edged with primary_dark.
+       BRANDING: keep these two fills equal to brand.primary and brand.primary_dark in architecture-theme.yml -->
+  <rect x="0" y="0" width="816" height="1056" fill="#FFFFFF"/>
+  <rect x="0" y="0" width="816" height="434" fill="#3459E6"/>
+  <rect x="0" y="434" width="816" height="6" fill="#2A47B8"/>
+</svg>

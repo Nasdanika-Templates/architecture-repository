@@ -1,0 +1,54 @@
+[#baselines]
+= Organization Baselines
+
+A cloud provider's public catalog is not what an organization may use. Organizations use a subset:
+the regions that meet their data residency rules, the virtual machine sizes their landing zone
+allows, the services their cloud governance has approved, the AI models and versions on their
+approved list, the deployment types, tiers and quotas they have bought. On top of the cloud are
+the organization's own platforms, such as a container platform, an API gateway or a monitoring
+stack, each with its own onboarding rules and lead times.
+
+An architecture that assumes the public catalog can be right on paper and impossible to deploy.
+An AI assistant makes this more likely, not less: it knows the public catalog as of its training,
+which is both broader than the organization's subset and out of date.
+
+[#confirm-and-baseline]
+== Confirm, then Baseline
+
+Organization-specific offerings are confirmed and baselined.
+
+Confirmed::
+With the owner of the subset: the cloud platform team, the cloud center of excellence, Information
+Security, the AI governance function. Until it is confirmed, an offering the architecture relies on
+is an [.assumption]#ASSUMPTION# in <<assumptions>>, with the owner who can confirm it; once
+confirmed, it is a [.fact]#FACT# with its source (<<separate-fact-assumption-decision>>).
+
+Baselined::
+Recorded in the repository with its as-of date and its source, so that the architecture states
+which version of the subset it was designed against. When the subset changes, a model version
+retired, a region added, a service approved, the baseline changes in a reviewed commit, and the
+diff shows what in the architecture depends on the change.
+
+The sample's baseline is in <<platform-baseline>>. It is a table written by hand, which is where to
+start. When the subset is published by a system, such as the allowed locations and SKUs in the
+cloud's policy definitions or the AI governance function's model register, the baseline can be a
+snapshot pulled at build time (<<external-information>>), and a check in the build can fail when an
+evaluation or an ADR relies on something outside it.
+
+[#baselines-and-evaluations]
+== Baselines and Evaluations
+
+An alternative that is outside the baseline is not ruled out, but it carries a cost the evaluation
+must show: an exception to request, a service to onboard, a delay. The sample's evaluations score
+this as a criterion, availability within the baseline, so that an alternative that needs an
+exception ranks lower for that reason, visibly, rather than being dropped without a trace or
+recommended without a warning (<<embedding-models>>, <<adr-001>>).
+
+ifdef::editor-notes[]
+[IMPORTANT,caption="Editor's note"]
+====
+Ask the platform team for their subset as a document or an export before the first assistant
+session, and put it in `inbox/`. The assistant then drafts against the organization's catalog, not
+the public one, and the baseline table is a conversion rather than a guess.
+====
+endif::[]

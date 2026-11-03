@@ -1,0 +1,59 @@
+[appendix]
+[#open-questions]
+== Open Questions
+
+What the architecture does not know yet (<<registers>>). Most PENDING decisions wait for one of
+these.
+
+[cols="1,5,2,1,3",options="header"]
+|===
+|ID |Question |Owner |Due |Answer
+
+|[[oq-01,OQ-01]]OQ-01
+|What are the baseline contact volumes by topic, and the targets for resolution without handover?
+|Contact Center operations
+|2026-11-30
+|
+
+|[[oq-02,OQ-02]]OQ-02
+|Which Azure OpenAI deployment type and regions satisfy the bank's data residency requirements?
+|Information Security
+|2026-11-15
+|
+
+|[[oq-03,OQ-03]]OQ-03
+|In what format and how often can the Content Management System export published content?
+|Digital Channels
+|2026-11-20
+|
+
+|[[oq-04,OQ-04]]OQ-04
+|How long must conversations be retained, and under which records class?
+|Data Protection Officer
+|2026-11-30
+|
+
+|[[oq-05,OQ-05]]OQ-05
+|Which languages besides English must the chat support, and when?
+|Head of Digital Channels
+|2026-12-15
+|
+
+|[[oq-06,OQ-06]]OQ-06
+|What are the measured results of the embedding and chat models on the golden question set?
+|AI product owner
+|2026-12-15
+|
+
+|[[oq-07,OQ-07]]OQ-07
+|Is the assistant a model under the bank's model risk management policy?
+|Model Risk Management
+|2026-11-30
+|
+
+|[[oq-08,OQ-08]]OQ-08
+|Is Azure AI Foundry Agent Service approved by the bank's cloud governance for customer data?
+|Enterprise Architecture
+|2026-11-20
+|
+|===

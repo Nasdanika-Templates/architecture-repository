@@ -1,0 +1,85 @@
+# The embedding model for the content index: direct weights, alternatives rated 1-5.
+# The scores are the AI assistant's draft, reviewed by the architects; the retrieval evaluation on the
+# golden question set replaces the quality scores with measurements.
+title: Embedding model
+method: direct
+close-margin: 0.25
+
+criteria:
+  - id: retrieval
+    name: Retrieval quality on the bank's content
+    description: Recall of the right passages for real customer questions
+  - id: availability
+    name: Availability within ADR-001
+    description: Available in Azure OpenAI in the bank's tenant and regions
+  - id: multilingual
+    name: Multilingual retrieval
+    description: For languages that may come into scope later
+  - id: cost
+    name: Cost
+    description: Embedding the content and the queries
+  - id: index-size
+    name: Index size
+    description: Dimensions and storage
+  - id: lifecycle
+    name: Lifecycle
+    description: Expected support horizon
+
+weights:
+  retrieval: 30
+  availability: 20
+  multilingual: 15
+  cost: 15
+  index-size: 10
+  lifecycle: 10
+
+alternatives:
+  - id: te3-large
+    label: E1
+    name: text-embedding-3-large
+    description: Azure OpenAI; higher quality; 3,072 dimensions, which can be reduced.
+    scores:
+      retrieval: 5
+      availability: 5
+      multilingual: 4
+      cost: 3
+      index-size: { score: 3, reason: "Largest vectors, unless the dimensions are reduced." }
+      lifecycle: 4
+  - id: te3-small
+    label: E2
+    name: text-embedding-3-small
+    description: Azure OpenAI; lower cost; 1,536 dimensions.
+    scores:
+      retrieval: { score: 4, reason: "Close to E1 on English benchmarks; unknown on this content." }
+      availability: 5
+      multilingual: 3
+      cost: 5
+      index-size: 5
+      lifecycle: 4
+  - id: ada-002
+    label: E3
+    name: text-embedding-ada-002
+    description: Azure OpenAI; the previous generation.
+    scores:
+      retrieval: 3
+      availability: 4
+      multilingual: 2
+      cost: 4
+      index-size: 4
+      lifecycle: { score: 2, reason: "Superseded by the text-embedding-3 models." }
+  - id: cohere
+    label: E4
+    name: Cohere Embed, multilingual
+    description: Through Azure AI Foundry, outside Azure OpenAI; strong multilingual retrieval.
+    scores:
+      retrieval: 4
+      availability: { score: 3, reason: "Outside Azure OpenAI: needs an exception to ADR-001." }
+      multilingual: 5
+      cost: 4
+      index-size: 4
+      lifecycle: 3
+
+scenarios:
+  - id: multilingual
+    name: Other languages in scope
+    weights: { multilingual: 35 }

@@ -1,0 +1,76 @@
+[#ai-governance]
+= AI Governance Alignment
+
+An AI system needs the evidence of AI governance: what the system is for, what it may not do, which
+risks were identified, how they are mitigated and measured, who accepted the rest, and how the
+system is watched once it is live. A repository that is versioned, reviewed and attributed is a
+natural home for that evidence, and an auditor can be given a PDF of a tagged version.
+
+[#aigp]
+== AIGP Domains
+
+The IAPP's Artificial Intelligence Governance Professional (AIGP) body of knowledge has four domains.
+They map to the repository as follows.
+
+[cols="2,4"]
+|===
+|AIGP domain |In the repository
+
+|Foundations of AI governance
+|Roles and accountability: the owners of decisions and risks; the principle that people decide
+(<<ai-drafts-people-decide>>).
+
+|How laws, standards and frameworks apply to AI
+|The applicable regulations and frameworks for the system, identified in <<ai-risk>>.
+
+|Governing AI development
+|Data provenance and classification (<<data>>), the choice of models (<<alternatives>>), the
+evaluation plan and the acceptance thresholds (<<ai-risk>>).
+
+|Governing AI deployment and use
+|Transparency to users, human oversight and escalation, monitoring, incident handling and
+retirement (<<ai-risk>>, <<technology>>).
+|===
+
+[#ai-frameworks]
+== Frameworks and Regulations
+
+Which frameworks apply depends on the organization and the jurisdiction. The ones most often
+relevant, and where they touch the document:
+
+NIST AI Risk Management Framework (AI RMF 1.0)::
+Its four functions, _Govern_, _Map_, _Measure_ and _Manage_, are a useful outline for <<ai-risk>>:
+the governance and roles, the context and risks, the evaluations and metrics, and the treatment of
+risks. Its Generative AI Profile (NIST AI 600-1) lists risks specific to generative AI, such as
+confabulation and information security, which make a good checklist.
+
+ISO/IEC 42001::
+The management system standard for AI. If the organization is certified or intends to be, the
+document is evidence for the system-level controls: impact assessment, data, documentation,
+monitoring.
+
+EU AI Act::
+Classifies AI systems by risk. A customer-facing chat assistant that informs and does not decide,
+such as the sample, typically carries transparency obligations: users must know they are talking to
+an AI. Credit decisions are high-risk. Record the classification and its reasoning as a decision.
+
+Model risk management in banking::
+Banking regulators expect models to be inventoried, validated independently and monitored, for
+example under the US supervisory guidance SR 11-7 or its local equivalents. Whether a generative
+AI system is a "model" in that sense is itself a question for the model risk function: record it as
+an open question until they answer.
+
+OWASP Top 10 for LLM Applications::
+The security risks of LLM applications, such as prompt injection, sensitive information disclosure
+and excessive agency. Use it as the checklist for the threat model.
+
+[#governance-in-repository]
+== What the Repository Adds
+
+* *Traceability.* Each risk links to the decisions that address it and to the evaluation that
+  measures it; each decision to the meeting where it was made.
+* *Accountability.* Only people move decisions to DECIDED; the commit shows who.
+* *Point-in-time evidence.* A tag rebuilds the exact document a review approved.
+* *The AI that writes the document is governed too.* The assistant drafts and people review, under
+  the same principles. Check that your assistant is approved for the data in the repository before
+  you give it the repository; a bank's architecture documents are confidential.

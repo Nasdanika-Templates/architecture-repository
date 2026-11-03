@@ -1,0 +1,193 @@
+[#pocs]
+= Proofs of Concept and Spikes
+
+Organizations run proofs of concept and spikes all the time, and many of them go nowhere. Not
+because they failed: many answered their question. The answer had nowhere to live. It stayed in a
+branch nobody merged, a slide nobody can find, a wiki page that went stale, or the head of the
+person who ran it. A year later someone asks the same question and runs the same spike.
+
+A proof of concept answers a question with evidence. An architecture repository is a place where
+questions, evidence and decisions live together and stay checked. The two fit at two levels.
+
+[#poc-is-architecture-project]
+== A Proof of Concept Is an Architecture Project
+
+A proof of concept, or a spike, is a small architecture project, and it can be a repository made
+from this template. The structure maps directly:
+
+[cols="2,3"]
+|===
+|Proof of concept |Where it goes
+
+|The question, and what answer would be good enough
+|The vision: the problem, the goals and the success criteria, agreed before the work starts.
+
+|What was tried
+|The alternatives, as an evaluation in `src/evaluations/` (<<evaluations>>).
+
+|The evidence
+|The code and its results, in the repository and in the document, built together (<<executable-snippets>>).
+
+|The answer
+|An ADR: a recommendation, PROPOSED, for the people who own the decision.
+
+|What was not tested
+|The assumptions and the open questions, so that nobody reads more into the result than it shows.
+
+|What it ran against
+|The versions of the products, models, libraries and services, recorded by the build, and the
+organization baseline it ran within (<<baselines>>).
+|===
+
+The rule that makes it pay: *a proof of concept is done when its document builds*. The question, the
+answer and the evidence are then in one versioned place, published, and findable by people and by
+AI assistants. A corpus of verified, versioned answers is better context for an assistant than a
+wiki.
+
+[#pocs-feed-architecture]
+== Proofs of Concept Feed the Architecture
+
+At the second level, an architecture project uses the results of proofs of concept as evidence.
+A proof of concept measures what an evaluation scored by judgment: the retrieval quality of an
+embedding model on the organization's own content, the latency of a model deployment in the
+organization's region, whether a vendor's API accepts a handover. Its results replace the drafted
+scores in the evaluation, and the decisions bound to the evaluation react (<<reactive>>).
+
+There are three ways to bring a proof of concept into the architecture repository:
+
+In the same repository::
+A directory per proof of concept, `poc/<id>/`, with its own sources and tests, built by the same
+build before the document. The simplest; fits a small project and a proof of concept that serves
+only it.
+
+Federated through a source repository::
+The proof of concept in a repository of its own, brought in as a Git submodule or subtree at a
+pinned commit, or read at a tag by the build. The proof of concept has its own owners and pace,
+and the architecture repository chooses when to take a new result.
+
+Federated through a binary repository::
+The proof of concept publishes its results and its sources as versioned artifacts, to a Maven
+repository, a package registry or a generic artifact repository, like any other build. The
+architecture project declares a dependency on a version, unpacks it in the build and includes what
+it needs. Published artifacts are versioned and immutable; taking a newer result is a one-line,
+reviewed change, and several architecture projects can use the same proof of concept.
+
+For the third, with Maven, the architecture project's build unpacks the proof of concept's
+published documentation and results, here a `docs` artifact, before the document is compiled:
+
+[source,xml]
+----
+<plugin>
+  <groupId>org.apache.maven.plugins</groupId>
+  <artifactId>maven-dependency-plugin</artifactId>
+  <executions>
+    <execution>
+      <id>proofs-of-concept</id>
+      <phase>generate-resources</phase>
+      <goals>
+        <goal>unpack</goal>
+      </goals>
+      <configuration>
+        <artifactItems>
+          <artifactItem>
+            <groupId>com.example.poc</groupId>
+            <artifactId>retrieval-spike</artifactId>
+            <version>1.2.0</version>
+            <classifier>docs</classifier>
+            <type>zip</type>
+            <outputDirectory>${project.build.directory}/poc/retrieval-spike</outputDirectory>
+          </artifactItem>
+        </artifactItems>
+      </configuration>
+    </execution>
+  </executions>
+</plugin>
+----
+
+The document then includes the results, `+include::{poc-dir}/retrieval-spike/results.adoc[]+`,
+and the evaluation reads the measured scores from the same artifact. A missing artifact, file or
+attribute fails the build.
+
+[#executable-snippets]
+== Snippets That Ran
+
+Code in a document is usually pasted, and pasted code drifts: the code changes, the snippet does
+not, and nobody notices until a reader tries it. In this repository, a snippet is not pasted. It is
+included from the source file, by a tagged region:
+
+[source,java]
+----
+// tag::ahp-weights[]
+double[] w = new double[n];
+...
+// end::ahp-weights[]
+----
+
+[source,asciidoc]
+----
+\include::{repository-root}/tools/Evaluations.java[tag=ahp-weights,indent=0]
+----
+
+The build runs the code before it compiles the document. If the code does not compile or does not
+run, or if its tests fail, the build fails, and nothing is published. If the tagged region is
+removed or renamed, the include fails, and so does the build. So a snippet in the published
+document is code that ran in the same build, and the results next to it are the results of that
+run.
+
+This repository has one such piece of code, the tool that computes the evaluations. The listing
+below is the part that computed the criteria weights in <<eval-solution-pattern-criteria>>, from
+the comparisons in <<eval-solution-pattern-comparisons>>, in the build that produced this document:
+
+[[ahp-weights-listing]]
+.The AHP weights and the consistency ratio, from tools/Evaluations.java
+[source,java]
+----
+include::{repository-root}/tools/Evaluations.java[tag=ahp-weights,indent=0]
+----
+
+A proof of concept works the same way: its code is tested by its build, its document includes the
+interesting parts of the code by tag, and its measurements are written by the run, not typed.
+
+[#recorded-runs]
+== Cloud Services and Recorded Runs
+
+Some proofs of concept call services that cost money, need credentials or give different answers on
+different days, such as a language model. Running them on every build is neither cheap nor
+reproducible. Run them on demand or on a schedule, record the requests, the responses, the
+measurements and the versions with an as-of date, and commit or publish the record. The build
+checks and reports the record, and replays it where the code can be tested against it. The document
+then says what was measured, against what, and when, which is what a reader needs in order to trust
+a number (<<as-of>>).
+
+[#other-languages]
+== Proofs of Concept in Other Languages
+
+Proofs of concept are often written in Python or in JavaScript and TypeScript, especially for AI.
+AsciiDoc is not tied to Java:
+
+* *Asciidoctor*, the reference implementation, is written in Ruby, with Asciidoctor PDF and
+  Asciidoctor Diagram as extensions.
+* *AsciidoctorJ* runs Asciidoctor on the JVM; this template uses it through Maven.
+* *Asciidoctor.js* runs Asciidoctor in JavaScript, in Node.js or a browser, and from TypeScript. The
+  Antora documentation site generator is built on it.
+* *Python* projects usually run Asciidoctor or Asciidoctor.js as a step of their build, or in a
+  container. The original AsciiDoc processor, `asciidoc-py`, is written in Python, but it is a
+  different and older implementation.
+
+Tagged regions work in any language's comment syntax, `# tag::name[]` in Python and
+`// tag::name[]` in TypeScript, so the snippets in <<executable-snippets>> work the same way.
+
+So a team that works in Python or TypeScript does not need Maven. Sibling template repositories can
+be created from this one: the document, the method, the prompts, the branding and the theme stay as
+they are, and the build is replaced with the language's own, which runs the tests first (`pytest`,
+or `vitest` or `jest`), then the evaluations, then Asciidoctor. The PDF theme and the HTML
+stylesheet in `theme/` work with Asciidoctor and Asciidoctor PDF in any implementation. Mixing is
+also possible: keep this build for the document, and run the proof of concept's own build from it.
+
+ifdef::editor-notes[]
+[IMPORTANT,caption="Editor's note"]
+====
+Sibling templates for Python and TypeScript do not exist yet. When one is made, it also needs a port
+of `tools/Evaluations.java`, or a way to run it, since the evaluations are part of the method.
+====
+endif::[]

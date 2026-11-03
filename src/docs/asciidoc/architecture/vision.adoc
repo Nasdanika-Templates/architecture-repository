@@ -1,0 +1,116 @@
+[#vision]
+= Architecture Vision
+
+_ADM Phase A. CPMAI Phase I, Business Understanding._
+
+[#vision-problem]
+== Problem
+
+[.fact]#FACT# The contact center of {bank} answers a high volume of routine questions from personal
+banking customers: fees, card and account procedures, the meaning of transactions, opening hours,
+how to use the {system}. Many of these questions are answered in the bank's published help content,
+which customers do not find or do not read (<<meeting-2026-10-28-kickoff>>).
+
+[.assumption]#ASSUMPTION# A large share of routine contacts could be resolved by a conversational
+assistant that can also see the customer's own recent transactions (<<a-01>>).
+
+[#vision-goals]
+== Goals and Success Measures
+
+[cols="3,3,2"]
+|===
+|Goal |Measure |Target
+
+|Resolve routine questions without a human
+|Share of conversations resolved without handover, confirmed by the customer
+|[.assumption]#ASSUMPTION# set after the pilot (<<oq-01>>)
+
+|Reduce contact-center load
+|Change in routine calls and messages per 1,000 active customers
+|Baseline to be measured (<<oq-01>>)
+
+|Keep customers satisfied
+|Satisfaction score of chat conversations, compared with the contact center's
+|Not lower
+
+|Answer correctly and safely
+|Groundedness and safety scores on the golden question set; complaints related to the chat
+|Thresholds in <<evaluation-plan>>
+|===
+
+[#vision-ai-fit]
+== Is AI the Right Solution?
+
+CPMAI asks this before anything else. The answer drafted here is a qualified yes:
+
+* The questions are in natural language and varied, which rules-based chatbots handle poorly.
+* The answers exist, in the bank's approved content and the customer's own data. The assistant
+  retrieves and explains them; it does not need to create knowledge, which keeps the risk of wrong
+  answers manageable (<<adr-002>>).
+* The cost of a wrong answer is bounded by the scope: no payments, no advice, read-only data, and a
+  human one click away (<<adr-005>>).
+
+A better search on the help pages is the non-AI alternative. It would serve the product questions
+but not "why was I charged this fee?", which needs the customer's own data.
+
+[#vision-scope]
+== Scope
+
+In scope::
+* The chat in the single-page application and the mobile app, for signed-in personal banking
+  customers, in English.
+* Answers from the bank's approved help and product content.
+* Read-only access to the customer's own accounts and recent transactions, through the existing API
+  application.
+* Handover to a human agent in the contact center, with the conversation so far.
+
+Out of scope for the first release::
+* Payments, transfers or any other change from the chat (<<adr-005>>).
+* Investment, credit or tax advice.
+* Voice (<<adr-008>>).
+* Languages other than English (<<oq-05>>).
+
+[#vision-constraints]
+== Constraints
+
+[.fact]#FACT# These constraints were stated at the kick-off (<<meeting-2026-10-28-kickoff>>):
+
+* Language models run on Azure OpenAI in the bank's own Azure tenant (<<adr-001>>).
+* Customer data stays in the bank's Azure regions; all traffic uses private networking.
+* The API application of the {system} is the only path to the Mainframe Banking System.
+* The bank's AI governance and model risk processes apply before any customer sees the chat.
+
+[#stakeholders]
+== Stakeholders
+
+[cols="2,4"]
+|===
+|Stakeholder |Main concerns
+
+|Head of Digital Channels (sponsor)
+|Customer experience, adoption, time to market.
+
+|Contact Center operations
+|Handover quality, agent workload, what customers are told.
+
+|Enterprise Architecture
+|Alignment with the target architecture and the Azure landing zone; reuse.
+
+|Information Security
+|Data leakage, prompt injection, access control, logging.
+
+|Model Risk Management
+|Whether the system is a model in the sense of the bank's policy; validation; monitoring.
+
+|AI Governance Board
+|Risk classification, transparency, human oversight, approval to launch.
+
+|Compliance and Legal
+|Conduct risk: wrong or misleading answers; complaints handling; disclosures.
+
+|Data Protection Officer
+|Personal data in prompts, transcripts and logs; retention; data subject rights.
+
+|{system} product and engineering teams
+|Changes to the web and mobile apps and the API application; operations.
+|===

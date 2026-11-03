@@ -1,0 +1,66 @@
+[preface]
+[#about]
+== About This Document
+
+This is an architecture repository as code. Its sources are plain text in a Git repository; a
+build compiles them into one document, this one, published as a web page and as a PDF at the
+addresses in the colophon. An AI assistant drafts and maintains much of the text. People review
+every change and make every decision.
+
+The document is also a template. When you create a repository from it, the first part,
+<<method>>, explains the approach and can stay. The second part, <<architecture>>, is a worked
+sample: an {feature} added to the {system} of the C4 model's example. Replace it with your
+own architecture, using the prompt template in <<initial-prompt>>.
+
+=== Who It Is For
+
+Architects::
+Who want architecture work to be reviewable, versioned and traceable, without a modeling tool to
+learn first.
+
+Project managers::
+Who run several projects at once and want each one documented the same way: a repository or a
+folder per project, the same structure, the same register of decisions, assumptions and open
+questions. <<pmp-cpmai>> maps the document to the PMP and CPMAI vocabularies.
+
+Engineers who run proofs of concept and spikes::
+Who want the answer to outlive the spike: a repository per proof of concept, its evidence built and
+published, its results used by the architecture that asked the question (<<pocs>>).
+
+Readers without access to source code::
+Business stakeholders, risk and compliance, and the enterprise architecture function. They read the
+PDF or the web page. They do not need Git, a Markdown renderer or a wiki account.
+
+=== Reading the Statements
+
+The method separates facts, assumptions and decisions (<<separate-fact-assumption-decision>>).
+Where the kind of a statement matters, it is labeled:
+
+[cols="1,4"]
+|===
+|Label |Meaning
+
+|[.fact]#FACT#
+|Verified, with a source: a meeting note, a document, a system of record, a measurement.
+
+|[.assumption]#ASSUMPTION#
+|Believed true and not yet verified. Every assumption is in <<assumptions>> with an owner and a way
+to validate it.
+
+|[.decision]#DECISION#
+|A choice made by a named person or body. Every decision is in <<decision-log>> with its status.
+|===
+
+Decisions have statuses, defined in <<decision-statuses>>: [.proposed]#PROPOSED#,
+[.pending]#PENDING#, [.decided]#DECIDED#, [.deferred]#DEFERRED#, [.rejected]#REJECTED# and
+[.superseded]#SUPERSEDED#.
+
+ifdef::editor-notes[]
+[IMPORTANT,caption="Editor's note"]
+====
+Editor's notes like this one are for the authors: to-dos, doubts and reminders that should not reach
+the readers. They are shown when `document.editor-notes` is `true` in the POM, the default, and
+left out with `mvn package -Ddocument.editor-notes=false`, for example for a version sent for
+approval.
+====
+endif::[]

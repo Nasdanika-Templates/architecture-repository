@@ -1,0 +1,92 @@
+[#compiled]
+= Why a Compiled Document
+
+The sources compile into one document, the way code compiles into a program: with a build, a
+version, and errors that stop the build. Each of the usual alternatives gives up something that
+architecture work needs.
+
+[#why-not-wiki]
+== Why Not a Wiki
+
+Wikis, such as Confluence, are good at many small pages that many people edit. Architecture needs
+something else from its documentation.
+
+[cols="1,2,2"]
+|===
+|Need |Wiki |Compiled repository
+
+|A version to approve
+|Pages change continuously; page history is per page, so "the architecture as approved on 12 March"
+is hard to reconstruct.
+|The whole document has a version. Each tag is a complete, rebuildable snapshot: the PDF that was
+approved is the PDF of that tag.
+
+|Ownership of changes
+|Edits are attributed, but there is no message saying why, and no review before a change is live.
+|Every change is a commit with an author and a message, and can go through a pull request with
+reviewers before it is merged.
+
+|Alternatives in flight
+|One version of each page; proposals live in copies that drift.
+|Branches: two competing proposals can be developed side by side, compared as diffs and merged.
+
+|Many contributors and sources
+|Content lives in one space; reuse is by copy and paste or by macros.
+|One document can be built from a federation of repositories: Git submodules or subtrees bring in
+the documentation of each domain, which its owners maintain in their own repositories.
+
+|Consistency
+|A broken link or a renamed page fails silently.
+|A broken cross-reference fails the build.
+|===
+
+A wiki remains a fine place for what is short-lived and conversational. Link to the published
+document from it.
+
+[#why-not-markdown]
+== Why Not Markdown
+
+Markdown in a repository already has most of the benefits of version control, and teams that keep
+architecture notes in Markdown with PlantUML diagrams are on the right track. AsciiDoc goes the rest
+of the way.
+
+One document from many sources::
+AsciiDoc includes files into files, with level offsets, so many small sources compile into one
+structured document with numbered sections, a table of contents, cross-references, a glossary and
+appendices. Markdown has no standard include, so a Markdown repository stays a collection of pages.
+
+A PDF for people without repository access::
+Business stakeholders, risk, audit and the enterprise architecture function usually have no access
+to source repositories, and no wish to have it. A PDF can be shared, annotated with comments,
+attached to an approval and archived. The HTML is a single file that reads offline.
+
+Refactoring::
+Documents can share content. A small project keeps its business, data, application and technology
+architecture (BDAT) in one document. A larger one gives each domain its own document and keeps a
+master document with summaries that link to them. Because the sources are files included into
+documents, a project can start small and factor out a domain when it grows, without rewriting
+(<<structure>>). Overlapping documents can include the same source rather than copies of it.
+
+Loud failures::
+The build fails on warnings: a broken cross-reference, a missing include, an undefined attribute.
+The document is compiled like code and fails loudly, while a wiki, a set of Markdown pages or a Jira
+project fails silently, with links to nowhere that nobody notices.
+
+The two languages are close cousins: headings, lists, emphasis, links and code blocks differ only in
+punctuation. Moving existing Markdown to AsciiDoc is mechanical, and a task an assistant does well:
+"Convert `docs/*.md` to AsciiDoc and include them in the document tree; keep the PlantUML blocks."
+
+[#why-not-jira]
+== Why Not Jira
+
+Jira is the right tool for work: issues, owners, sprints, statuses. In TOGAF terms it fits from
+Phase E onwards, when the architecture is decomposed into work packages (<<togaf>>), and those
+work packages can and should be Jira epics.
+
+Early architecture work is different. Much is in flux, the questions matter more than the tasks,
+and what people need is a view of the whole: how the options compare, which assumptions everything
+rests on, what has been decided and what has not. Issues are a list; architecture is a structure.
+A document shows the big picture, and its history shows how the picture changed.
+
+The two meet in the build: the document can pull the state of the Jira issues it depends on, as of
+the build, and show it next to the architecture (<<external-information>>).

@@ -1,0 +1,26 @@
+/*
+ * BRANDING: the brand of the HTML document. The build appends this file after Bootswatch Zephyr and
+ * the Zephyr bridge, so these rules win. Keep the colors equal to the brand block of
+ * pdf/architecture-theme.yml. The logo is branding/logo.png; the build embeds it as --zb-logo.
+ */
+
+/* The organization's name at the top left, next to the logo */
+#header::before,
+#toc.toc2::before {
+	content: "Nasdanika Templates";
+}
+
+:root {
+	/* brand.primary */
+	--bs-primary: #3459e6;
+	--bs-primary-rgb: 52, 89, 230;
+	--bs-link-color: #3459e6;
+	--bs-link-color-rgb: 52, 89, 230;
+	/* brand.primary_dark */
+	--bs-link-hover-color: #2a47b8;
+	--bs-link-hover-color-rgb: 42, 71, 184;
+	/* Tints of brand.primary, for admonitions and table headers */
+	--bs-primary-text-emphasis: #15245c;
+	--bs-primary-bg-subtle: #d6defa;
+	--bs-primary-border-subtle: #aebdf5;
+}

@@ -1,0 +1,23 @@
+[#adr-005,reftext=ADR-005]
+= ADR-005: Read-Only in the First Release
+
+Status:: [.decided]#DECIDED# 2026-10-28, Head of Digital Channels, at the kick-off
+(<<meeting-2026-10-28-kickoff>>).
+
+Context:: Letting a language model initiate payments or change data raises the stakes of every
+failure, from a misunderstanding to a prompt injection, and would require strong customer
+authentication inside the chat.
+
+Alternatives::
+* Read-only: answers and explanations only.
+* Low-risk changes, such as freezing a card, with confirmation.
+* Payments with confirmation and strong customer authentication.
+
+Decision:: The first release is read-only. The assistant's tools can only read the signed-in
+customer's own data, through the API Application, with the customer's token.
+
+Consequences:: Excessive agency (OWASP LLM06) is largely designed out. Customers who want to act are
+pointed to the right screen of the app. Write actions can be proposed in a new ADR after general
+availability.
+
+Related:: <<vision-scope>>, <<map>>.

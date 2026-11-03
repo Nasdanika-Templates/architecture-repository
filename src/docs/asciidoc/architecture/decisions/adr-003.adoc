@@ -1,0 +1,21 @@
+[#adr-003,reftext=ADR-003]
+= ADR-003: Embedding Model
+
+Status:: [.pending]#PENDING# 2026-10-30. Waits for the retrieval evaluation on the golden question
+set, <<poc-1>> (<<oq-06>>). To be decided by the AI product owner.
+
+Context:: The embedding model determines how well the assistant finds the right passages, which
+bounds the quality of every answer about products and procedures.
+
+Alternatives:: Evaluated in <<embedding-models>>. Ranking with the drafted scores:
+{eval-embedding-models-ranking}.
+
+Decision:: Pending. Replace the drafted retrieval scores of {eval-embedding-models-te3-large} and
+{eval-embedding-models-te3-small} with the recall measured by <<poc-1>>, and decide on the new
+ranking; if they are
+still within the evaluation's close margin, choose the cheaper one.
+
+Consequences:: Changing the embedding model later means re-embedding the content and rebuilding the
+index, a small job at this content size.
+
+Related:: <<adr-001>>, <<evaluation-plan>>, <<a-07>>.

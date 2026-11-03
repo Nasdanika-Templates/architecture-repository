@@ -1,0 +1,86 @@
+[#decisions-method]
+= Decisions, Assumptions and Open Questions
+
+Three registers keep the state of the architecture honest: the decision log, the assumptions and
+the open questions. The assistant maintains them; people own every entry.
+
+[#adr]
+== Architecture Decision Records
+
+Each significant decision has an Architecture Decision Record (ADR): a short file in
+`src/docs/asciidoc/architecture/decisions/`, numbered, never renumbered and never deleted. A decision
+that changes is superseded by a new ADR, which links back.
+
+An ADR has these sections:
+
+[horizontal]
+Status:: One of the statuses below, with the date it was reached and who reached it.
+Context:: What forces the decision: the problem, the constraints, the relevant facts and
+assumptions, by reference.
+Alternatives:: The options considered, including doing nothing, with their scores when they were
+ranked (<<alternatives>>).
+Decision:: The choice, stated in one or two sentences.
+Consequences:: What becomes easier, what becomes harder, what follows: new work, new risks, new
+assumptions.
+Related:: Assumptions, open questions, meetings and other ADRs.
+
+The ADR format is Michael Nygard's, with the alternatives made explicit, because a ranking of
+alternatives against criteria is where an assistant helps most and where a reviewer most needs to
+see the reasoning.
+
+[#decision-statuses]
+== Decision Statuses
+
+[cols="1,3,2"]
+|===
+|Status |Meaning |Moves to
+
+|[.proposed]#PROPOSED#
+|Drafted, often by the assistant, with alternatives and a recommendation. Nobody has decided yet.
+|PENDING, DECIDED, REJECTED
+
+|[.pending]#PENDING#
+|Reviewed, and waiting for something specific: an evaluation, a piece of information, a meeting.
+The ADR names what it waits for, usually an open question, and who will decide.
+|DECIDED, REJECTED, DEFERRED
+
+|[.decided]#DECIDED#
+|Decided by the named owner on the given date. Changing it takes a new ADR.
+|SUPERSEDED
+
+|[.deferred]#DEFERRED#
+|Consciously postponed, with the trigger for revisiting it, such as a phase, a date or an event.
+|PROPOSED
+
+|[.rejected]#REJECTED#
+|Considered and declined. Kept, so the question is not reopened without new information.
+|-
+
+|[.superseded]#SUPERSEDED#
+|Replaced by a later ADR, which it names.
+|-
+|===
+
+Only a person moves a decision to DECIDED. The assistant may propose a status change, for example
+when a meeting note records a decision, and the reviewer of the diff confirms it.
+
+[#registers]
+== Assumptions and Open Questions
+
+Assumptions (<<assumptions>>) have an ID, a statement, an owner, a way to validate it, a date by
+which it must be validated, and a status: open, validated or invalidated. An invalidated assumption
+is a signal: ask the assistant which decisions and sections depend on it.
+
+Open questions (<<open-questions>>) have an ID, the question, an owner, a due date and, when
+answered, the answer and its source. Most PENDING decisions wait for an open question.
+
+Keep the registers as AsciiDoc tables while they are small. When they grow, or when they must be
+shared with tools, keep them as data, for example in YAML or CSV, and generate the tables in the
+build (<<models>>); AsciiDoc tables can include CSV directly.
+
+[#meeting-notes-method]
+== Meeting Notes
+
+Meeting notes (<<meeting-notes>>) are the evidence. Each note has the date, the participants by
+role, a summary, and the facts, assumptions, decisions, open questions and actions that came out of
+the meeting, each with an ID that the registers refer to. The raw transcript stays in `inbox/`.

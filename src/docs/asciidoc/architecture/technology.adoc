@@ -1,0 +1,125 @@
+[#technology]
+= Technology Architecture
+
+_ADM Phase D. CPMAI Phase VI, Model Operationalization._
+
+[#platform]
+== Platform
+
+[cols="2,3,2"]
+|===
+|Concern |Choice |Status
+
+|Language models
+|Azure OpenAI, in the bank's tenant, deployments in the bank's approved regions
+|[.decided]#DECIDED# <<adr-001>>
+
+|Chat and embedding models
+|See <<chat-models>> and <<embedding-models>>
+|[.pending]#PENDING# <<adr-003>>, <<adr-004>>
+
+|Content index
+|Azure AI Search, hybrid retrieval with semantic ranking
+|[.proposed]#PROPOSED# <<adr-007>>
+
+|Orchestrator and ingestion runtime
+|The bank's container platform in the Azure landing zone
+|[.assumption]#ASSUMPTION# <<a-05>>
+
+|Conversation store
+|Azure Cosmos DB
+|[.proposed]#PROPOSED# part of <<adr-002>>
+
+|Safety
+|Azure AI Content Safety: content filters and prompt shields, configured per the bank's policy
+|[.proposed]#PROPOSED# part of <<adr-002>>
+
+|Secrets and identity
+|Managed identities between Azure services; Key Vault for anything that is still a secret
+|Landing zone standard
+|===
+
+[#platform-baseline]
+== Organization Baseline
+
+The architecture relies on the part of Azure that {bank} has approved, not on the public catalog
+(<<baselines>>). The baseline below is what the architecture was designed against. Owner: the
+cloud platform team. As of 2026-10-30; nothing in it is confirmed yet.
+
+[cols="2,3,3,2",options="header"]
+|===
+|Offering |What the architecture relies on |Source |Status
+
+|Regions
+|The bank's approved regions for customer data, for every service in <<platform>>
+|Cloud platform team; Information Security
+|[.assumption]#ASSUMPTION# <<oq-02>>
+
+|Azure OpenAI deployment type
+|A regional or data-zone deployment type, as data residency allows
+|Information Security
+|[.assumption]#ASSUMPTION# <<oq-02>>
+
+|Chat and embedding models and versions
+|The alternatives in <<chat-models>> and <<embedding-models>>, deployable in the approved regions
+under that deployment type
+|The bank's approved model list; the Azure catalog
+|[.assumption]#ASSUMPTION# <<a-07>>
+
+|Azure OpenAI quota
+|Enough tokens per minute per environment for the peak in <<a-06>> and for evaluation runs
+|Cloud platform team, quota process
+|[.assumption]#ASSUMPTION# <<a-09>>
+
+|Azure AI Search
+|A tier with semantic ranking and private endpoints, in the approved regions
+|The landing zone's allowed services and tiers
+|[.assumption]#ASSUMPTION# <<a-09>>
+
+|Container platform
+|The bank's container platform in the Azure landing zone, with its node sizes and onboarding process
+|Platform team
+|[.assumption]#ASSUMPTION# <<a-05>>
+
+|Azure AI Foundry Agent Service, Cohere through Azure AI Foundry
+|Nothing: the recommended alternatives do not need them. Alternatives that do are scored lower for
+availability.
+|Cloud governance
+|[.pending]#PENDING# <<oq-08>>
+|===
+
+When an item is confirmed, its status becomes [.fact]#FACT# with the source, and the commit that
+changes it says who confirmed it. If an item is refused, the evaluations that rely on it are
+re-scored, and the decisions bound to them show whether they still hold (<<reactive>>).
+
+[#environments]
+== Environments and Networking
+
+* Development, test, pre-production and production, each with its own Azure OpenAI deployments and
+  index, so that evaluation runs never touch production quotas.
+* All Azure services are reached through private endpoints; public network access is disabled.
+* The orchestrator is reachable only through the bank's existing API gateway, which fronts the
+  {system}.
+* Model deployments use the bank's chosen deployment type for data residency, for example a
+  regional or data-zone deployment, as approved by Information Security (<<oq-02>>).
+
+[#operations]
+== Operations
+
+Monitoring::
+Latency, token usage and cost per conversation, handover rate, content filter hits, grounding check
+failures and customer feedback, on the bank's monitoring platform. Message text stays out of
+telemetry (<<data-principles>>).
+
+Capacity::
+Azure OpenAI quota per deployment, sized from the expected peak conversations per minute
+(<<a-06>>), with provisioned throughput considered once usage is known.
+
+Model lifecycle::
+Model versions are retired by the provider on a published schedule. Each upgrade is a change: the
+evaluation suite runs against the new version, and the results are recorded before the switch
+(<<evaluation-plan>>).
+
+Fallback::
+If the model is unavailable or too slow, the chat says so and offers the contact center. There is
+no silent fallback to a different, unevaluated model.

@@ -1,0 +1,106 @@
+[#decisions]
+= Decisions
+
+_The Governance Log of the TOGAF Architecture Repository._
+
+[#decision-log]
+== Decision Log
+
+Statuses are defined in <<decision-statuses>>. Dates are when the status was reached. The entries
+of decisions bound to evaluations show the evaluation's current result (<<reactive>>).
+
+[cols="1,5,2,2,3",options="header"]
+|===
+|ADR |Decision |Status |Date |Owner
+
+|<<adr-001,001>>
+|Azure OpenAI in the bank's tenant is the source of language models
+|[.decided]#DECIDED#
+|2026-10-28
+|Enterprise Architecture
+
+|<<adr-002,002>>
+|Solution pattern: {eval-solution-pattern-custom-rag}, ranked {eval-solution-pattern-custom-rag-rank}
+|[.proposed]#PROPOSED#
+|2026-10-30
+|Architecture Review Board
+
+|<<adr-003,003>>
+|Embedding model; leading on drafted scores: {eval-embedding-models-first}
+|[.pending]#PENDING#
+|2026-10-30
+|AI product owner
+
+|<<adr-004,004>>
+|Chat model; leading on drafted scores: {eval-chat-models-first}
+|[.pending]#PENDING#
+|2026-10-30
+|AI product owner
+
+|<<adr-005,005>>
+|Read-only: no payments or other changes from the chat in the first release
+|[.decided]#DECIDED#
+|2026-10-28
+|Head of Digital Channels
+
+|<<adr-006,006>>
+|Fine-tune a model on contact-center transcripts
+|[.rejected]#REJECTED#
+|2026-10-28
+|Head of Digital Channels
+
+|<<adr-007,007>>
+|Azure AI Search as the content index
+|[.proposed]#PROPOSED#
+|2026-10-30
+|Architecture Review Board
+
+|<<adr-008,008>>
+|Voice channel
+|[.deferred]#DEFERRED#
+|2026-10-28
+|Head of Digital Channels
+
+|<<adr-009,009>>
+|A standalone chat web application
+|[.superseded]#SUPERSEDED# by 010
+|2026-10-28
+|Head of Digital Channels
+
+|<<adr-010,010>>
+|The chat is part of the single-page application and the mobile app
+|[.decided]#DECIDED#
+|2026-10-28
+|Head of Digital Channels
+
+|<<adr-011,011>>
+|EU AI Act classification: limited risk, transparency obligations
+|[.pending]#PENDING#
+|2026-10-30
+|AI Governance Board
+|===
+
+[#adrs]
+== Records
+
+include::decisions/adr-001.adoc[leveloffset=+1]
+
+include::decisions/adr-002.adoc[leveloffset=+1]
+
+include::decisions/adr-003.adoc[leveloffset=+1]
+
+include::decisions/adr-004.adoc[leveloffset=+1]
+
+include::decisions/adr-005.adoc[leveloffset=+1]
+
+include::decisions/adr-006.adoc[leveloffset=+1]
+
+include::decisions/adr-007.adoc[leveloffset=+1]
+
+include::decisions/adr-008.adoc[leveloffset=+1]
+
+include::decisions/adr-009.adoc[leveloffset=+1]
+
+include::decisions/adr-010.adoc[leveloffset=+1]
+
+include::decisions/adr-011.adoc[leveloffset=+1]

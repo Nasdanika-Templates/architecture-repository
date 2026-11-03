@@ -1,0 +1,13 @@
+[#adr-008,reftext=ADR-008]
+= ADR-008: Voice Channel
+
+Status:: [.deferred]#DEFERRED# 2026-10-28, Head of Digital Channels. Revisit after general
+availability of the chat.
+
+Context:: Voice would serve the customers who call the contact center, but adds speech recognition,
+speech synthesis, telephony integration and new risks, such as voice spoofing.
+
+Decision:: Deferred. The trigger to revisit: the chat at general availability, with its resolution
+rate known.
+
+Related:: <<vision-scope>>.

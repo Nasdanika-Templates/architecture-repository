@@ -1,0 +1,76 @@
+[appendix]
+[#glossary]
+== Glossary
+
+[glossary]
+ADM:: The Architecture Development Method of TOGAF: phases from the Preliminary phase and the
+Architecture Vision (A) to Architecture Change Management (H), around Requirements Management.
+
+ADR:: Architecture Decision Record. A short, numbered record of one decision: its context,
+alternatives, decision, consequences and status.
+
+AHP:: Analytic Hierarchy Process. A method by Thomas Saaty that derives weights from pairwise
+comparisons and measures their consistency.
+
+AIGP:: Artificial Intelligence Governance Professional, a certification of the IAPP.
+
+Architecture Repository:: In TOGAF, the store of the outputs of architecture work. Here, a Git
+repository compiled into one document.
+
+AsciiDoc:: A plain-text markup language for documents, with includes, cross-references and
+attributes; compiled by Asciidoctor into HTML, PDF and other formats.
+
+Baseline:: The subset of a cloud provider's or vendor's offerings that the organization has
+approved, such as regions, SKUs, services and AI models, recorded with an as-of date and a source
+(<<baselines>>).
+
+C4 model:: A model for describing software architecture in four levels of zoom: system context,
+container, component and code. By Simon Brown.
+
+Consistency ratio:: In AHP, a measure of how contradictory a set of pairwise comparisons is; above
+0.10, the comparisons should be revisited.
+
+CPMAI:: Cognitive Project Management for AI, an iterative, data-centric methodology for AI projects,
+in six phases from Business Understanding to Model Operationalization.
+
+Embedding:: A vector of numbers that represents the meaning of a text, so that texts with similar
+meanings have nearby vectors. Used to find relevant passages.
+
+Golden question set:: A curated set of real questions with expected answers and sources, used to
+evaluate the assistant before launch and after every change.
+
+Groundedness:: The degree to which an answer is supported by the passages and data given to the
+model, rather than invented.
+
+Grounding check:: A check, before an answer is sent, that it is supported by its sources.
+
+Handover:: Transferring a conversation from the assistant to a human agent, with its context.
+
+Hybrid retrieval:: Search that combines keyword matching and vector similarity.
+
+PENDING, PROPOSED, DECIDED, DEFERRED, REJECTED, SUPERSEDED:: Decision statuses; see
+<<decision-statuses>>.
+
+Proof of concept:: A small, time-boxed piece of work that answers one question with evidence. Here,
+an architecture project of its own, done when its document builds (<<pocs>>). A _spike_ is the
+same, in agile vocabulary.
+
+Prompt injection:: An attempt to override a model's instructions through its input, directly in a
+message or indirectly through retrieved content.
+
+RAG:: Retrieval-Augmented Generation. A pattern in which relevant passages are retrieved and given
+to a language model, which answers from them.
+
+Reactive architecture:: In this document, the chain from evaluations to decisions that the build
+recomputes, like a spreadsheet: a change in a score or a weight updates the rankings and flags the
+decisions it challenges.
+
+Snapshot:: The state of an external system as of a moment, pulled by the build into the repository
+and committed.
+
+Tagged region:: A part of a source file between `tag::name[]` and `end::name[]` comments, which
+an AsciiDoc include can bring into the document, so that a snippet is the code that ran
+(<<executable-snippets>>).
+
+Tool call:: A model's request to the orchestrator to run a function, such as reading the customer's
+recent transactions, and return the result.

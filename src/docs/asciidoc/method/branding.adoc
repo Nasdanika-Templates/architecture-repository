@@ -1,0 +1,53 @@
+[#branding]
+= Branding with AI Assistance
+
+A document that looks like the organization's own is read as the organization's own. The look is a
+few text files, so an assistant can apply a brand from its guidelines in minutes, and you can
+review the result as a diff and as a built document.
+
+[#brand-inputs]
+== Inputs and Outputs
+
+The brand _inputs_ are in `branding/`. You provide them:
+
+`branding/logo.png`::
+Your organization's logo, replacing the placeholder. A square PNG of about 200 pixels works best;
+an SVG works too: name it `logo.svg` and set the `brand.logo` property in `pom.xml`. Use the
+variant the guidelines prescribe for a colored background, because the logo sits on the title band.
+
+`branding/guidelines/`::
+The brand guidelines, or a note saying where they are. Copy them only if you may: guidelines are
+often internal documents, and some are licensed. A link and the relevant excerpts, the palette and
+the rules for the logo, are usually enough.
+
+The _outputs_ are in `theme/`. The assistant changes them:
+
+`theme/pdf/architecture-theme.yml`::
+The PDF theme. Its BRAND block holds every brand color the PDF uses.
+
+`theme/pdf/title-band.svg`::
+The band across the title page, in the primary color.
+
+`theme/brand.css`::
+The web page: the organization's name at the top left next to the logo, and the colors, as
+Bootstrap CSS variables.
+
+The rest of `theme/`, the Bootswatch Zephyr stylesheet and the bridge from Asciidoctor's HTML to it,
+is copied from the Nasdanika Zephyr Books and pinned; leave it alone. The build embeds the logo in
+the web page, scaled down, so the page stays a single file.
+
+[#branding-prompt]
+== The Branding Prompt
+
+Copy the logo, add the guidelines, fill in the prompt, and give it to the assistant. The prompt asks
+for a contrast check, so that a brand color that fails accessibility guidelines on the title band
+or in links is reported rather than used.
+
+.prompts/branding.md
+[source,markdown]
+----
+include::{repository-root}/prompts/branding.md[]
+----
+
+Review the diff, then open the built HTML and PDF. Look at the title page, the headings, the links,
+the table headers and the logo, in particular its edges on the band.

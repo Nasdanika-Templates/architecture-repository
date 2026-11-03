@@ -1,0 +1,94 @@
+[#business]
+= Business Architecture
+
+_ADM Phase B._
+
+[#capabilities]
+== Capabilities
+
+[cols="2,3,1"]
+|===
+|Capability |Description |Change
+
+|Customer Self-Service
+|Customers find information and complete tasks without a human.
+|Extended
+
+|Conversational Assistance
+|Answering customers' questions in natural language, from approved content and their own data.
+|New
+
+|Assisted Service Handover
+|Moving a conversation from the assistant to a human agent with its context.
+|New
+
+|Content Management
+|Authoring, approving and publishing help and product content.
+|Extended: content becomes an input to the assistant, so its quality matters more
+
+|Conversation Oversight
+|Reviewing conversations for quality, conduct and safety; handling complaints about the assistant.
+|New
+|===
+
+[#use-cases]
+== Use Cases
+
+[cols="1,3,3"]
+|===
+|ID |Use case |Example
+
+|UC-1
+|Ask about products, fees and procedures
+|"How do I order a replacement card?" "What is the fee for an international transfer?"
+
+|UC-2
+|Ask about one's own accounts and transactions
+|"Why was I charged $15 on 2 October?" "When did my salary arrive?"
+
+|UC-3
+|Get help using the {system}
+|"Where do I download a statement?"
+
+|UC-4
+|Be handed over to a human
+|On request, when the assistant cannot answer, or when the topic is sensitive: bereavement,
+fraud, financial difficulty, complaints.
+
+|UC-5
+|Review conversations
+|Conversation Oversight samples conversations and reviews flagged ones.
+|===
+
+[#requirements]
+== Requirements
+
+[cols="1,5"]
+|===
+|ID |Requirement
+
+|R-1
+|Customers are told, before the first message, that they are talking to an AI assistant, and can
+ask for a human at any time.
+
+|R-2
+|Answers about products and procedures are based only on approved, published content, and cite it.
+
+|R-3
+|Answers about accounts use only the signed-in customer's own data, retrieved at the time of the
+question, with the customer's existing permissions.
+
+|R-4
+|The assistant does not initiate payments, change data, or give investment, credit or tax advice.
+
+|R-5
+|Sensitive topics, as defined by the Contact Center and Compliance, are handed over to a human.
+
+|R-6
+|Conversations are retained and can be retrieved for complaints and audits, under the bank's
+records policy (<<oq-04>>).
+
+|R-7
+|The first response token arrives within [.assumption]#ASSUMPTION# 2 seconds for 95% of messages
+(<<a-06>>).
+|===

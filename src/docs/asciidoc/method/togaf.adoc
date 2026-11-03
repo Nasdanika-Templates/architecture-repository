@@ -1,0 +1,79 @@
+[#togaf]
+= TOGAF ADM Alignment
+
+TOGAF has a reputation for being heavy, and applied in full it is. Its Architecture Development
+Method (ADM) is still the most widely recognized map of what architecture work covers, and the
+standard itself expects to be tailored. This repository follows a tailored ADM: the same phases, as
+chapters and registers of one document, and no deliverable that nobody reads.
+
+Even the name comes from TOGAF: an _Architecture Repository_ is where TOGAF keeps the outputs of
+architecture work. Here it is a Git repository.
+
+[#adm-phases]
+== Phases and Where They Live
+
+[cols="2,3,3"]
+|===
+|ADM phase |Concern |In this document
+
+|Preliminary
+|Principles, method, tools, governance of the architecture work itself.
+|<<method>>: the principles, the tooling and the decision process.
+
+|Requirements Management
+|Requirements flow into and out of every phase.
+|<<open-questions>> and <<assumptions>>; requirements in <<business>>.
+
+|A. Architecture Vision
+|Scope, stakeholders, drivers, goals, constraints; approval to proceed.
+|<<vision>>, <<context>>.
+
+|B. Business Architecture
+|Capabilities, processes, actors, value.
+|<<business>>.
+
+|C. Information Systems Architectures
+|Data and application architecture.
+|<<data>>, <<application>>.
+
+|D. Technology Architecture
+|Platforms, infrastructure, environments.
+|<<technology>>.
+
+|E. Opportunities and Solutions
+|Alternatives, solution building blocks, work packages.
+|<<alternatives>>, <<roadmap>>; work packages become Jira epics.
+
+|F. Migration Planning
+|Transition architectures, roadmap, priorities.
+|<<roadmap>>.
+
+|G. Implementation Governance
+|Architecture contracts, compliance reviews.
+|<<implementation-governance>>, <<decision-log>>; Jira status pulled into the document
+(<<external-information>>).
+
+|H. Architecture Change Management
+|Changes to the architecture after it is in use.
+|New ADRs that supersede old ones; Git history; tagged versions.
+|===
+
+[#adm-tailoring]
+== Tailoring
+
+The tailoring is deliberate:
+
+* *One document, not a deliverable per phase.* A phase is a chapter. A small effort has short
+  chapters, and an empty chapter is a visible gap rather than a missing deliverable.
+* *Iteration is the default.* The ADM is a cycle, and in practice its phases overlap. Here every
+  chapter can change in any commit, and the Git history is the record of the iterations.
+* *The Governance Log is the decision log plus Git.* TOGAF's Architecture Repository includes a
+  Governance Log of decisions, compliance assessments and dispensations. Here it is
+  <<decision-log>>, with the commits and tags that show when each decision changed.
+* *Requirements Management is continuous.* New information is captured as it arrives, from meetings
+  and prompts, into the registers (<<review-and-update>>).
+* *Artifacts are as small as they can be.* A catalog is a table, a diagram is PlantUML, a matrix is a
+  table, until the size justifies generating them from a model (<<models>>).
+
+The alignment makes the document legible to an enterprise architecture function that thinks in ADM
+terms without asking anyone else to.

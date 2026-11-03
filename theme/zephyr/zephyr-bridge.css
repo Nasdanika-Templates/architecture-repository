@@ -1,0 +1,474 @@
+/*
+ * Nasdanika Zephyr Books: the bridge between Asciidoctor's HTML5 output and Bootswatch Zephyr.
+ * Copied from the Nasdanika SDK Runtime 2026.10.0, doc/zephyr/css; only this paragraph is new. Do
+ * not edit: override in ../brand.css and ../architecture.css, which the build appends after it.
+ *
+ * The build concatenates bootstrap.min.css (Bootswatch Zephyr 5.3.3, vendored and pinned) and this
+ * file into one stylesheet, which Asciidoctor embeds, so a book's HTML is a single file that reads
+ * offline. Rules use Bootstrap's CSS variables rather than Zephyr's values, so they follow the theme
+ * and Bootstrap's color modes.
+ */
+
+:root {
+	--zb-toc-width: 19rem;
+	--zb-content-width: 52rem;
+	--zb-code-bg: var(--bs-tertiary-bg);
+}
+
+body {
+	margin: 0;
+	padding: 0 1.5rem 3rem;
+	line-height: 1.6;
+}
+
+#header, #content, #footnotes, #footer {
+	max-width: var(--zb-content-width);
+	margin-left: auto;
+	margin-right: auto;
+}
+
+/*
+ * Brand: the Nasdanika logo and the series name at the top left, as on the web site. On wide screens
+ * it heads the fixed table of contents, which is the page's top left corner; otherwise it heads the
+ * header. The logo comes from zephyr-logo.css, generated, so the HTML stays a single file.
+ */
+#header::before,
+#toc.toc2::before {
+	content: "Nasdanika Zephyr Books";
+	display: flex;
+	align-items: center;
+	min-height: 3rem;
+	padding-left: 3.75rem;
+	background: var(--zb-logo) left center / 3rem 3rem no-repeat;
+	font-weight: 600;
+	font-size: 0.95rem;
+	color: var(--bs-emphasis-color);
+}
+
+#toc.toc2::before {
+	display: none;
+}
+
+/* Header: the title band of the PDF's title page, as a block */
+#header {
+	padding: 2.5rem 0 1rem;
+}
+
+#header::before {
+	margin-bottom: 1.5rem;
+}
+
+#header > h1 {
+	font-weight: 700;
+	color: var(--bs-emphasis-color);
+	border-top: 0.5rem solid var(--bs-primary);
+	padding-top: 1.25rem;
+	margin-bottom: 0.25rem;
+}
+
+#header .details {
+	color: var(--bs-secondary-color);
+	font-size: 0.95rem;
+	margin-bottom: 1.5rem;
+}
+
+#header .details br {
+	display: none;
+}
+
+#header .details #revnumber::before {
+	content: "\00b7  ";
+}
+
+/* Table of contents: a side panel on wide screens, a block above the content otherwise */
+#toc {
+	font-size: 0.9rem;
+	padding: 1rem 0;
+}
+
+#toctitle {
+	font-weight: 700;
+	color: var(--bs-emphasis-color);
+	text-transform: uppercase;
+	letter-spacing: 0.04em;
+	font-size: 0.8rem;
+	margin-bottom: 0.5rem;
+}
+
+#toc ul {
+	list-style: none;
+	padding-left: 0;
+	margin: 0;
+}
+
+#toc ul ul {
+	padding-left: 1rem;
+}
+
+#toc li {
+	margin: 0.15rem 0;
+}
+
+#toc a {
+	text-decoration: none;
+	color: var(--bs-body-color);
+}
+
+#toc a:hover {
+	color: var(--bs-primary);
+}
+
+#toc .sectlevel0 > li > a, #toc .sectlevel1 > li > a {
+	font-weight: 500;
+}
+
+@media (min-width: 1100px) {
+	body.toc2 {
+		padding-left: calc(var(--zb-toc-width) + 2rem);
+	}
+
+	body.toc2 #toc.toc2 {
+		position: fixed;
+		top: 0;
+		left: 0;
+		bottom: 0;
+		width: var(--zb-toc-width);
+		overflow-y: auto;
+		padding: 1.5rem 1.25rem;
+		background-color: var(--bs-tertiary-bg);
+		border-right: 1px solid var(--bs-border-color);
+	}
+
+	body.toc2 #header::before {
+		display: none;
+	}
+
+	body.toc2 #toc.toc2::before {
+		display: flex;
+		margin-bottom: 1.5rem;
+	}
+}
+
+/* Headings */
+h1, h2, h3, h4, h5, h6 {
+	color: var(--bs-emphasis-color);
+	scroll-margin-top: 1rem;
+}
+
+h1.sect0 {
+	margin-top: 3rem;
+	padding-top: 1rem;
+	border-top: 0.25rem solid var(--bs-primary);
+	font-size: 2rem;
+}
+
+.sect1 {
+	margin-top: 2.5rem;
+}
+
+.sect1 > h2 {
+	padding-bottom: 0.35rem;
+	border-bottom: 1px solid var(--bs-border-color);
+	font-size: 1.65rem;
+}
+
+.sect2 > h3 {
+	margin-top: 2rem;
+	color: var(--bs-primary);
+	font-size: 1.3rem;
+}
+
+.sect3 > h4 {
+	margin-top: 1.5rem;
+	font-size: 1.1rem;
+}
+
+h2 > a.anchor, h3 > a.anchor, h4 > a.anchor, h5 > a.anchor {
+	position: absolute;
+	margin-left: -1.2rem;
+	text-decoration: none;
+	opacity: 0;
+}
+
+h2:hover > a.anchor, h3:hover > a.anchor, h4:hover > a.anchor, h5:hover > a.anchor {
+	opacity: 0.6;
+}
+
+h2 > a.anchor::before, h3 > a.anchor::before, h4 > a.anchor::before, h5 > a.anchor::before {
+	content: "\00a7";
+}
+
+#preamble .sectionbody > .paragraph:first-child p, .partintro p {
+	font-size: 1.1rem;
+}
+
+/* Blocks */
+.paragraph, .ulist, .olist, .dlist, .listingblock, .literalblock, .imageblock, .admonitionblock,
+.sidebarblock, .quoteblock, .exampleblock, .tableblock, .colist {
+	margin-bottom: 1rem;
+}
+
+.title, caption.title {
+	font-weight: 500;
+	font-size: 0.9rem;
+	color: var(--bs-secondary-color);
+	margin-bottom: 0.35rem;
+}
+
+.imageblock .title {
+	font-style: italic;
+	margin-top: 0.4rem;
+}
+
+.imageblock .content img {
+	max-width: 100%;
+	height: auto;
+}
+
+/* Code */
+code {
+	color: var(--bs-code-color);
+	font-size: 0.875em;
+}
+
+pre {
+	font-size: 0.82rem;
+	line-height: 1.45;
+}
+
+.listingblock pre, .literalblock pre {
+	background-color: var(--zb-code-bg);
+	border: 1px solid var(--bs-border-color);
+	border-left: 0.2rem solid var(--bs-primary);
+	border-radius: var(--bs-border-radius);
+	padding: 0.75rem 1rem;
+	overflow-x: auto;
+	margin: 0;
+}
+
+.listingblock pre code, .literalblock pre code {
+	color: inherit;
+	font-size: inherit;
+	background: none;
+}
+
+.listingblock pre.rouge, pre.highlight {
+	background-color: var(--zb-code-bg) !important;
+}
+
+b.conum, i.conum {
+	display: inline-block;
+	min-width: 1.25rem;
+	height: 1.25rem;
+	line-height: 1.25rem;
+	border-radius: 50%;
+	background-color: var(--bs-primary);
+	color: #fff;
+	font-size: 0.7rem;
+	font-style: normal;
+	font-weight: 700;
+	text-align: center;
+}
+
+pre b.conum, pre i.conum {
+	margin-left: 0.25rem;
+}
+
+.colist ol {
+	padding-left: 1.5rem;
+}
+
+.colist td:first-child {
+	vertical-align: top;
+	padding-right: 0.5rem;
+}
+
+/* Admonitions as Bootstrap alerts */
+.admonitionblock > table {
+	width: 100%;
+	border-collapse: separate;
+	border-left: 0.25rem solid var(--zb-alert, var(--bs-primary));
+	background-color: var(--zb-alert-bg, var(--bs-primary-bg-subtle));
+	border-radius: var(--bs-border-radius);
+}
+
+.admonitionblock td.icon {
+	width: 6.5rem;
+	padding: 0.75rem 0.5rem 0.75rem 1rem;
+	vertical-align: top;
+	font-weight: 700;
+	text-transform: uppercase;
+	font-size: 0.75rem;
+	letter-spacing: 0.04em;
+	color: var(--zb-alert, var(--bs-primary));
+}
+
+.admonitionblock td.content {
+	padding: 0.75rem 1rem 0.75rem 0;
+}
+
+.admonitionblock td.content > :last-child, .admonitionblock td.content > :last-child p {
+	margin-bottom: 0;
+}
+
+.admonitionblock.tip {
+	--zb-alert: var(--bs-success);
+	--zb-alert-bg: var(--bs-success-bg-subtle);
+}
+
+.admonitionblock.important {
+	--zb-alert: var(--bs-warning-text-emphasis);
+	--zb-alert-bg: var(--bs-warning-bg-subtle);
+}
+
+.admonitionblock.caution, .admonitionblock.warning {
+	--zb-alert: var(--bs-danger);
+	--zb-alert-bg: var(--bs-danger-bg-subtle);
+}
+
+/* Sidebars, quotes and examples */
+.sidebarblock {
+	background-color: var(--bs-tertiary-bg);
+	border: 1px solid var(--bs-border-color);
+	border-radius: var(--bs-border-radius);
+	padding: 1rem 1.25rem;
+}
+
+.sidebarblock > .content > .title {
+	color: var(--bs-emphasis-color);
+	font-size: 1rem;
+}
+
+.quoteblock {
+	border-left: 0.2rem solid var(--bs-primary);
+	padding: 0.25rem 1rem;
+	color: var(--bs-secondary-color);
+}
+
+.quoteblock blockquote {
+	margin: 0;
+}
+
+.quoteblock .attribution {
+	font-size: 0.9rem;
+	margin-top: 0.25rem;
+}
+
+.quoteblock .attribution::before {
+	content: "\2014 ";
+}
+
+.exampleblock > .content {
+	border: 1px solid var(--bs-border-color);
+	border-radius: var(--bs-border-radius);
+	padding: 1rem;
+}
+
+/* Tables, in the manner of .table .table-sm */
+table.tableblock {
+	width: 100%;
+	margin-bottom: 1rem;
+	border-collapse: collapse;
+	font-size: 0.92rem;
+}
+
+table.tableblock > caption.title {
+	caption-side: top;
+	text-align: left;
+}
+
+table.tableblock th.tableblock, table.tableblock td.tableblock {
+	padding: 0.35rem 0.5rem;
+	border-bottom: 1px solid var(--bs-border-color);
+	vertical-align: top;
+}
+
+table.tableblock thead th.tableblock {
+	border-bottom: 2px solid var(--bs-primary);
+	color: var(--bs-emphasis-color);
+}
+
+table.tableblock p.tableblock {
+	margin: 0;
+}
+
+table.tableblock tbody tr:nth-child(even) {
+	background-color: var(--bs-tertiary-bg);
+}
+
+/* Lists */
+.dlist dt {
+	color: var(--bs-emphasis-color);
+	font-weight: 500;
+}
+
+.dlist dd {
+	margin-left: 1.25rem;
+	margin-bottom: 0.5rem;
+}
+
+.ulist li p, .olist li p {
+	margin-bottom: 0.25rem;
+}
+
+/* Roles: status labels, as Bootstrap badges */
+.available, .sketch, .planned {
+	display: inline-block;
+	padding: 0.15em 0.45em;
+	border-radius: var(--bs-border-radius-sm);
+	font-size: 0.72em;
+	font-weight: 700;
+	letter-spacing: 0.03em;
+	vertical-align: 0.1em;
+	color: #fff;
+}
+
+.available {
+	background-color: var(--bs-success);
+}
+
+.sketch {
+	background-color: var(--bs-warning);
+	color: var(--bs-dark);
+}
+
+.planned {
+	background-color: var(--bs-secondary);
+}
+
+.term {
+	font-style: italic;
+}
+
+/* Footnotes and footer */
+#footnotes {
+	margin-top: 2.5rem;
+	padding-top: 0.75rem;
+	border-top: 1px solid var(--bs-border-color);
+	font-size: 0.85rem;
+}
+
+#footnotes hr {
+	display: none;
+}
+
+#footer {
+	margin-top: 3rem;
+	padding-top: 0.75rem;
+	border-top: 1px solid var(--bs-border-color);
+	color: var(--bs-secondary-color);
+	font-size: 0.8rem;
+}
+
+@media print {
+	body.toc2 {
+		padding-left: 0;
+	}
+
+	#toc.toc2 {
+		position: static;
+		width: auto;
+		background: none;
+		border: 0;
+	}
+}

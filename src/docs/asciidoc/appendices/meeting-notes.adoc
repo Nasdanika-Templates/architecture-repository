@@ -1,0 +1,9 @@
+[appendix]
+[#meeting-notes]
+== Meeting Notes
+
+The evidence for the facts and decisions in the document, newest first. Each note was converted
+from a reviewed transcript in `inbox/` with the prompt in <<meeting-notes-prompt>>
+(<<meeting-notes-workflow>>).
+
+include::meeting-notes/2026-10-28-kickoff.adoc[leveloffset=+1]

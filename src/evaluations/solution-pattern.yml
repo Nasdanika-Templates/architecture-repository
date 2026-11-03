@@ -1,0 +1,103 @@
+# The solution pattern for the AI Chat Assistant: criteria weighted with AHP, alternatives rated 1-5.
+# The build turns this file into target/generated-docs/evaluations/solution-pattern.adoc and into
+# attributes such as {eval-solution-pattern-first}; see the chapter on evaluations.
+title: Solution pattern
+method: ahp
+close-margin: 0.25
+
+criteria:
+  - id: security
+    name: Security and data control
+    description: Tenancy, private networking, where customer data is processed
+  - id: regulatory
+    name: Regulatory fit and auditability
+    description: Logging, traceability of answers, access for model validation
+  - id: quality
+    name: Answer quality and grounding
+    description: Control over retrieval, prompts and grounding checks
+  - id: latency
+    name: Latency
+    description: Time to first token and to a complete answer
+  - id: cost
+    name: Cost at the expected volume
+    description: Run cost per conversation, platform fees
+  - id: time-to-market
+    name: Time to market
+    description: Time to a customer pilot
+  - id: operability
+    name: Operability and skills fit
+    description: Fit with the bank's platforms and the team's skills
+  - id: portability
+    name: Portability
+    description: Ability to change models or platforms later
+
+# Each row compared with the criteria after it, on Saaty's scale: 1 equal, 3 moderately more
+# important, 5 strongly, 7 very strongly, 9 extremely; 1/3 and so on for the reverse.
+comparisons:
+  security:       { regulatory: 1, quality: 1, latency: 2, cost: 2, time-to-market: 2, operability: 2, portability: 4 }
+  regulatory:     { quality: 1, latency: 2, cost: 2, time-to-market: 2, operability: 2, portability: 3 }
+  quality:        { latency: 2, cost: 2, time-to-market: 2, operability: 2, portability: 4 }
+  latency:        { cost: 1, time-to-market: 1, operability: 1, portability: 2 }
+  cost:           { time-to-market: 1, operability: 1, portability: 2 }
+  time-to-market: { operability: 1, portability: 2 }
+  operability:    { portability: 2 }
+
+alternatives:
+  - id: custom-rag
+    label: A
+    name: Custom RAG orchestrator
+    description: The bank builds the Chat Orchestrator on Azure OpenAI and Azure AI Search, in its own landing zone.
+    scores:
+      security: { score: 5, reason: "Every component in the bank's tenant and network, under its controls." }
+      regulatory: { score: 5, reason: "Full control over logging, citations and what a validator can inspect." }
+      quality: { score: 4, reason: "Retrieval, prompts and grounding checks are all tunable; quality depends on the team." }
+      latency: 4
+      cost: 4
+      time-to-market: { score: 2, reason: "Most to build: orchestrator, guardrails, handover." }
+      operability: { score: 3, reason: "A new service to run, in the team's language and platform." }
+      portability: { score: 4, reason: "Models and index sit behind the bank's own interfaces." }
+  - id: managed-agent
+    label: B
+    name: Managed agent service
+    description: Azure AI Foundry Agent Service hosts the agent, with retrieval and the account tools as functions; the bank configures rather than builds.
+    scores:
+      security: { score: 4, reason: "In the bank's tenant; fewer knobs than a custom build." }
+      regulatory: 4
+      quality: 4
+      latency: 4
+      cost: 4
+      time-to-market: { score: 4, reason: "Configuration rather than code for the agent loop." }
+      operability: 4
+      portability: { score: 2, reason: "Tied to the service's agent model and release cadence." }
+  - id: low-code
+    label: C
+    name: Low-code copilot platform
+    description: Microsoft Copilot Studio, with Azure OpenAI and connectors to the content and the API Application.
+    scores:
+      security: 4
+      regulatory: { score: 3, reason: "Less control over what is logged and how answers are traced." }
+      quality: { score: 3, reason: "Less control over retrieval and grounding than a customer-facing banking channel needs." }
+      latency: 3
+      cost: 3
+      time-to-market: { score: 5, reason: "Fastest to a working pilot." }
+      operability: 4
+      portability: 1
+  - id: saas
+    label: D
+    name: Conversational banking product
+    description: A third-party SaaS product for banking chat, integrated with the Internet Banking System and the contact center.
+    scores:
+      security: { score: 3, reason: "Customer data processed outside the bank's tenant." }
+      regulatory: 3
+      quality: 3
+      latency: 4
+      cost: { score: 2, reason: "Highest cost per conversation at the expected volume." }
+      time-to-market: 4
+      operability: 3
+      portability: 2
+
+# What-if weight sets, in percent; the criteria not listed keep their weights and all are rescaled
+scenarios:
+  - id: speed
+    name: Speed over control
+    weights: { security: 10, time-to-market: 25 }

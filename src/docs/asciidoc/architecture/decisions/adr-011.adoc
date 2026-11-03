@@ -1,0 +1,21 @@
+[#adr-011,reftext=ADR-011]
+= ADR-011: EU AI Act Classification
+
+Status:: [.pending]#PENDING# 2026-10-30. Proposed by the architects; waits for the AI Governance
+Board.
+
+Context:: The bank applies the EU AI Act's classification as its internal standard for AI systems
+facing customers. The assistant informs and hands over; it makes no decision about customers.
+
+Alternatives::
+* Limited risk, with transparency obligations.
+* High risk, if any part of the assistant were used to evaluate customers.
+
+Decision:: Pending. Proposed: limited risk, with the transparency obligations met by R-1 and the
+disclosures in the apps.
+
+Consequences:: If confirmed, the obligations are transparency to customers and the bank's own AI
+policy. If a feature were later to evaluate customers, such as pre-qualifying them for credit, the
+classification would be revisited before that feature is built.
+
+Related:: <<risk-classification>>, <<oq-07>>.

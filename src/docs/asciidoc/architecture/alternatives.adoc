@@ -1,0 +1,86 @@
+[#alternatives]
+= Alternatives and Evaluation
+
+_ADM Phase E. CPMAI Phase IV, Model Development._
+
+Three choices shape the solution: the solution pattern, the embedding model and the chat model. For
+each, the assistant identified the alternatives, proposed criteria and weights, scored each
+alternative against each criterion with a reason, and proposed what-if scenarios. People reviewed
+the criteria, the weights and the reasons. The evaluations are data, in `src/evaluations/`; the
+tables below are generated from them by the build, and the decisions are bound to their results
+(<<evaluations>>). The model scores are drafts, to be replaced by measurements
+(<<evaluation-plan>>).
+
+[IMPORTANT]
+====
+A ranking is an input to a decision, not the decision (<<ai-drafts-people-decide>>). Where two
+alternatives are close, the ranking says that they are close, not which one is better.
+====
+
+[.assumption]#ASSUMPTION# Product and model names, capabilities and regional availability are as
+understood when this was drafted and must be checked against the current Azure catalog before a
+decision (<<a-07>>).
+
+[#solution-patterns]
+== Solution Pattern
+
+The criteria are weighted with the Analytic Hierarchy Process, from pairwise comparisons agreed
+with the Architecture Review Board's delegates (<<ahp>>).
+
+include::{evaluations-dir}/solution-pattern.adoc[]
+
+Interpretation::
+{eval-solution-pattern-custom-rag} gives the bank full control over every step, which scores well
+with Security, Model Risk and Compliance, at the price of building and operating more.
+{eval-solution-pattern-managed-agent} keeps most of that control inside the bank's tenant and is
+faster to deliver. [.assumption]#ASSUMPTION# It is approved by the bank's cloud governance for
+customer data (<<oq-08>>).
+ifeval::["{eval-solution-pattern-scenario-speed-first-id}" != "{eval-solution-pattern-first-id}"]
+The ranking is sensitive to how speed is weighed against control: in the scenario
+_{eval-solution-pattern-scenario-speed}_, {eval-solution-pattern-scenario-speed-first} ranks first.
+endif::[]
+
+Recommendation::
+{eval-solution-pattern-custom-rag}, with {eval-solution-pattern-managed-agent} as the fallback if
+the bank's cloud governance approves it and the sponsor's deadline requires it (<<adr-002>>,
+[.proposed]#PROPOSED#).
+
+[#embedding-models]
+== Embedding Model
+
+include::{evaluations-dir}/embedding-models.adoc[]
+
+Interpretation::
+The content is in English and small, a few thousand pages, so cost and index size matter little in
+absolute terms, and the difference in retrieval quality on _this_ content is unknown.
+{eval-embedding-models-te3-large} can also be used with reduced dimensions, which narrows its
+disadvantage in index size. {eval-embedding-models-cohere} would need an exception to <<adr-001>>;
+in the scenario _{eval-embedding-models-scenario-multilingual}_ the ranking is
+{eval-embedding-models-scenario-multilingual-ranking}.
+
+Recommendation::
+Measure {eval-embedding-models-te3-large} and {eval-embedding-models-te3-small} on the golden
+question set, recall at 5 and at 10, replace their retrieval scores with the results, and decide on
+the new ranking (<<adr-003>>, [.pending]#PENDING# <<oq-06>>).
+
+[#chat-models]
+== Chat Model
+
+include::{evaluations-dir}/chat-models.adoc[]
+
+Interpretation::
+The ranking turns on how groundedness is weighed against cost. For a regulated bank that is not an
+academic variation: the cost of a wrong answer may well exceed the cost of the tokens. In the
+scenario _{eval-chat-models-scenario-groundedness-first}_, {eval-chat-models-scenario-groundedness-first-first}
+ranks first.
+
+Routing::
+The choice need not be exclusive. A common design answers with a smaller model and routes complex
+or low-confidence questions to a larger one. It adds a component and an evaluation per route; it is
+worth it only if no single model meets both the quality and the latency thresholds.
+
+Recommendation::
+Evaluate {eval-chat-models-gpt-41}, {eval-chat-models-gpt-41-mini} and
+{eval-chat-models-gpt-5-mini} on the golden question set against the thresholds in
+<<evaluation-plan>>, update their scores, and choose the cheapest model that meets all the
+thresholds (<<adr-004>>, [.pending]#PENDING# <<oq-06>>).

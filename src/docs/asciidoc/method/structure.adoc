@@ -1,0 +1,107 @@
+[#structure]
+= Repository and Document Structure
+
+[#repository-layout]
+== Repository Layout
+
+[cols="2,5"]
+|===
+|Path |What it holds
+
+|`pom.xml`
+|The build: name, version, the published URL, and the plugins that compile the document.
+
+|`src/docs/asciidoc/index.adoc`
+|The master document. It sets the document's attributes and includes everything else, in order.
+
+|`src/docs/asciidoc/front/`
+|The colophon and the preface.
+
+|`src/docs/asciidoc/method/`
+|Part I, the method. Keep, trim or replace.
+
+|`src/docs/asciidoc/architecture/`
+|Part II, the architecture: one file per chapter, aligned with the ADM phases. The decisions are in
+`architecture/decisions/`, one file per ADR.
+
+|`src/docs/asciidoc/appendices/`
+|Assumptions, open questions, meeting notes and the glossary.
+
+|`src/docs/asciidoc/diagrams/`
+|The PlantUML configuration shared by all diagrams.
+
+|`src/evaluations/`
+|Evaluations as data, in YAML: alternatives, criteria, weights, scores. The build generates their
+reports and the attributes that decisions bind to (<<evaluations>>).
+
+|`prompts/`
+|The prompts that shaped the document, in Markdown, ready to paste into an assistant. The document
+includes them, so they are part of the published record.
+
+|`inbox/`
+|Raw inputs: reviewed meeting transcripts, notes, emails. The sources that facts cite.
+
+|`branding/`
+|Brand inputs: the logo and the brand guidelines (<<branding>>).
+
+|`theme/`
+|The look: the PDF theme, the HTML stylesheets and the title page, derived from the brand inputs.
+
+|`tools/`
+|Small build helpers, run by the build with the JDK's source launcher: `Evaluations.java` computes
+the evaluations, `LogoCss.java` embeds the logo in the HTML.
+
+|`poc/` (when needed)
+|Proofs of concept that live in this repository, one directory each, built and tested before the
+document (<<pocs>>).
+
+|`.github/workflows/`
+|The workflow that builds the document and publishes it to GitHub Pages.
+|===
+
+[#document-tree]
+== The Document Tree
+
+`index.adoc` includes each chapter with `leveloffset=+1`. Each chapter file starts with a level-0
+title, so it can be previewed on its own in an editor and moved to another level, or to another
+document, without changing its headings.
+
+Cross-references use explicit IDs, such as `+[#alternatives]+` and `+<<alternatives>>+`, rather
+than generated ones, so they survive a retitled section. Prefer short, stable IDs: decisions use
+their ADR number (`adr-003`), assumptions `a-07`, open questions `oq-04`.
+
+Diagrams are PlantUML blocks in the text, next to what they illustrate. The build renders them, so
+a diagram cannot drift from its source.
+
+[#start-small]
+== Start Small, Factor Out
+
+A small project needs one document. As it grows, factor it out:
+
+. *One document.* Everything in one repository and one `index.adoc`, as here.
+. *A document per domain.* When the data architecture, say, outgrows a chapter, give it its own
+  master document in the same repository, with its own title page, and replace its chapter in the
+  main document with a summary that links to it. The build compiles both.
+. *A repository per domain.* When a domain has its own owners and its own pace, move its sources to
+  its own repository and bring it back as a Git submodule or subtree. The main document still
+  includes its summary, and the build fails if the summary references something the domain
+  removed.
+
+Each step is a refactoring, and an assistant can do most of it: "Factor the data architecture out
+into `data/index.adoc`, with its own title page; leave a one-page summary in the main document that
+links to it; fix the cross-references."
+
+[#models]
+== Hand-Written and Generated Content
+
+AsciiDoc is useful before any model exists, and it stays useful after. The high-level structure, the
+narrative, the rationale and the decisions are written by people and the assistant, in AsciiDoc.
+Lower-level detail, such as the catalog of applications, the entities of a data model, the
+interfaces of an API or the resources of a cloud subscription, is better generated from a model or
+a system of record into AsciiDoc files that the document includes: for example, the documentation
+of a data model generated from its Nasdanika Meta model.
+
+Generated files are never edited by hand (<<regenerate-dont-patch>>). They live under the build's
+`target/` directory, or in a directory of their own marked as generated, and the hand-written text
+refers to them by cross-reference. The external information in <<external-information>> is a
+special case of the same pattern.

@@ -1,0 +1,21 @@
+[#adr-004,reftext=ADR-004]
+= ADR-004: Chat Model
+
+Status:: [.pending]#PENDING# 2026-10-30. Waits for the evaluation on the golden question set,
+<<poc-2>> (<<oq-06>>). To be decided by the AI product owner, with Model Risk Management.
+
+Context:: The chat model writes every answer and decides which tools to call. Groundedness, safety
+and tool calling matter more than raw capability; latency and cost matter at the expected volume.
+
+Alternatives:: Evaluated in <<chat-models>>. Ranking with the drafted scores:
+{eval-chat-models-ranking}. In the scenario _{eval-chat-models-scenario-groundedness-first}_:
+{eval-chat-models-scenario-groundedness-first-ranking}.
+
+Decision:: Pending. Choose the cheapest model that meets all the thresholds in <<evaluation-plan>>;
+consider routing between a small and a large model only if no single model does.
+
+Consequences:: Model versions are retired on the provider's schedule, so this decision will be
+revisited: each new version is added to the evaluation, measured, and checked against the decision
+in the next build (<<reactive>>).
+
+Related:: <<adr-001>>, <<a-07>>, <<a-08>>.

@@ -1,0 +1,110 @@
+[#roadmap]
+= Roadmap and Work Packages
+
+_ADM Phases E, F and G._
+
+[#phases]
+== Phases
+
+[cols="1,3,3",options="header"]
+|===
+|Phase |Outcome |Exit criteria
+
+|0. Decide
+|The PENDING and PROPOSED decisions closed; the evaluation harness and the golden set ready.
+|<<adr-002>>, <<adr-003>>, <<adr-004>>, <<adr-007>> and <<adr-011>> DECIDED.
+
+|1. Pilot
+|The chat for bank employees as customers, on the web only, with product questions (UC-1, UC-3)
+and handover.
+|Evaluation thresholds met; AI Governance Board approval for a customer pilot.
+
+|2. Customer pilot
+|A small share of customers, web and mobile, with account questions (UC-2).
+|Thresholds met in production monitoring; baseline and targets set (<<oq-01>>).
+
+|3. General availability
+|All signed-in personal banking customers.
+|Pilot results reviewed by the sponsor and the AI Governance Board.
+|===
+
+[#sample-pocs]
+== Proofs of Concept
+
+Phase 0 closes its decisions with evidence, not with more judgment. Each proof of concept answers one
+question, is built and published as described in <<pocs>>, and feeds an evaluation or an
+assumption. None has run yet; the scores they will replace are the drafted ones in
+<<alternatives>>.
+
+[cols="1,4,3,3",options="header"]
+|===
+|ID |Question |Feeds |Lives in
+
+|[[poc-1,POC-1]]POC-1
+|Which embedding model retrieves the right passages for real customer questions, on the bank's own
+content? Recall at 5 on the golden question set, per model, at the reduced and full dimensions.
+|The retrieval scores in <<embedding-models>>; <<adr-003>>; <<oq-06>>
+|This repository, `poc/retrieval/`, run by the build against recorded embeddings (<<recorded-runs>>)
+
+|[[poc-2,POC-2]]POC-2
+|How grounded, correct and fast is each chat model on the golden set, in the bank's region and
+deployment type?
+|The groundedness, quality and latency scores in <<chat-models>>; <<adr-004>>; <<a-08>>
+|The evaluation harness (WP-6), its own repository, which publishes versioned results that this
+build unpacks
+
+|[[poc-3,POC-3]]POC-3
+|Can the Contact Center Platform accept a chat from an external channel, with the conversation so
+far?
+|<<a-04>>; <<adr-002>>
+|The contact center team's repository, a source dependency at a tag
+|===
+
+[#work-packages]
+== Work Packages
+
+Each work package becomes a Jira epic. From here on, the status of the work lives in Jira and is
+pulled into the document by the build (<<snapshot-example>>).
+
+[cols="1,3,2",options="header"]
+|===
+|ID |Work package |Depends on
+
+|WP-1
+|Landing zone, private networking and Azure OpenAI deployments per environment
+|<<adr-001>>, <<oq-02>>
+
+|WP-2
+|Content ingestion and the content index
+|<<adr-003>>, <<adr-007>>, <<oq-03>>
+
+|WP-3
+|Chat Orchestrator, guardrails and handover
+|<<adr-002>>, <<adr-004>>, <<a-04>>
+
+|WP-4
+|Read-only account endpoints in the API Application
+|<<adr-005>>
+
+|WP-5
+|Chat panel in the single-page application and the mobile app
+|<<adr-010>>
+
+|WP-6
+|Evaluation harness and golden question set
+|<<oq-06>>
+
+|WP-7
+|AI governance and model risk reviews; customer disclosures
+|<<adr-011>>, <<oq-07>>
+|===
+
+[#implementation-governance]
+== Implementation Governance
+
+* *Architecture contract.* The DECIDED ADRs are the contract with the delivery teams. A change in
+  delivery that contradicts one needs a new ADR, not a quiet workaround.
+* *Compliance reviews.* At each phase exit, the architects compare what is built with this document,
+  helped by the snapshots of the deployed resources (<<across-systems>>), and record the differences
+  as findings, decisions or dispensations in <<decision-log>>.
+* *Versions.* The version of this document approved at each phase exit is tagged.

@@ -1,0 +1,283 @@
+# Architecture Repository theme for Asciidoctor PDF.
+#
+# Derived from the theme of the Nasdanika Zephyr Books: Bootswatch Zephyr's palette, Noto Sans for
+# text and M+ 1mn for code, all bundled with Asciidoctor PDF and licensed under the SIL Open Font
+# License. The page is US Letter; change page.size to A4 if your organization prints on A4.
+#
+# BRANDING: the brand block below holds every brand color the theme uses. To rebrand, change the
+# brand block, title-band.svg (the same primary and primary_dark), ../brand.css (the HTML) and
+# ../../branding/logo.png. The branding chapter of the document has a prompt that asks an AI
+# assistant to do it from your brand guidelines.
+extends: default
+font:
+  catalog:
+    merge: true
+    Noto Sans:
+      normal: GEM_FONTS_DIR/notosans-regular-subset.ttf
+      bold: GEM_FONTS_DIR/notosans-bold-subset.ttf
+      italic: GEM_FONTS_DIR/notosans-italic-subset.ttf
+      bold_italic: GEM_FONTS_DIR/notosans-bold_italic-subset.ttf
+  fallbacks: []
+# --- BRAND: begin -----------------------------------------------------------------------------
+brand:
+  primary: 3459E6
+  primary_dark: 2A47B8
+  text: 495057
+  title: 212529
+  light: F8F9FA
+  rule: DEE2E6
+  muted: 6C757D
+  subtle: EBEFFC
+  code: AB296A
+# --- BRAND: end -------------------------------------------------------------------------------
+# Decision statuses; not brand colors, so that a status reads the same in every organization
+status:
+  decided: 2E8540
+  proposed: 3459E6
+  pending: B26A00
+  deferred: 6C757D
+  rejected: B91C1C
+  superseded: 6C757D
+page:
+  size: Letter
+  margin: [0.75in, 0.85in, 0.75in, 0.85in]
+  margin_inner: 0.95in
+  margin_outer: 0.75in
+base:
+  font_family: Noto Sans
+  font_color: $brand_text
+  font_size: 10
+  line_height_length: 14
+  line_height: $base_line_height_length / $base_font_size
+  text_align: left
+  font_size_large: 12
+  font_size_small: 8
+vertical_rhythm: 10
+horizontal_rhythm: 10
+link:
+  font_color: $brand_primary
+codespan:
+  font_color: $brand_code
+  font_size: 0.92em
+heading:
+  font_family: Noto Sans
+  font_color: $brand_title
+  font_style: bold
+  h1_font_size: 26
+  h2_font_size: 20
+  h3_font_size: 14
+  h4_font_size: 11.5
+  h5_font_size: 10
+  h6_font_size: 9.5
+  line_height: 1.15
+  margin_top: $vertical_rhythm * 0.9
+  margin_bottom: $vertical_rhythm * 0.6
+  min_height_after: $base_line_height_length * 3
+  h1:
+    font_color: $brand_primary
+  h2:
+    font_color: $brand_title
+  h3:
+    font_color: $brand_primary
+    margin_top: $vertical_rhythm * 1.2
+chapter:
+  break_before: always
+part:
+  break_after: always
+title_page:
+  background_image: image:title-band.svg[fit=fill]
+  text_align: left
+  logo:
+    image: image:../../branding/logo.png[pdfwidth=0.6in]
+    top: 4%
+    align: left
+  title:
+    top: 14%
+    font_family: Noto Sans
+    font_size: 34
+    font_style: bold
+    font_color: FFFFFF
+    line_height: 1.1
+  subtitle:
+    font_family: Noto Sans
+    font_size: 14
+    font_style: normal
+    font_color: FFFFFF
+    line_height: 1.3
+    margin_top: 14
+  authors:
+    margin_top: 170
+    font_size: 13
+    font_color: $brand_title
+  revision:
+    margin_top: 8
+    font_size: 9.5
+    font_color: $brand_muted
+caption:
+  font_family: Noto Sans
+  font_size: 8.5
+  font_style: italic
+  font_color: $brand_muted
+code:
+  font_family: M+ 1mn
+  font_size: 8.5
+  line_height: 1.2
+  padding: [7, 9, 7, 9]
+  background_color: $brand_light
+  border_color: $brand_rule
+  border_radius: 3
+  border_width: 0.5
+  border_left_width: 2.5
+  border_left_color: $brand_primary
+conum:
+  font_color: $brand_primary
+  font_size: 9
+admonition:
+  column_rule_color: $brand_rule
+  column_rule_width: 1
+  padding: [3, 10, 3, 10]
+  icon:
+    note:
+      name: fas-info-circle
+      stroke_color: $brand_primary
+      size: 20
+    tip:
+      name: fas-lightbulb
+      stroke_color: 2E8540
+      size: 20
+    important:
+      name: fas-pen-nib
+      stroke_color: D97706
+      size: 20
+    caution:
+      name: fas-exclamation-triangle
+      stroke_color: B45309
+      size: 20
+    warning:
+      name: fas-exclamation-circle
+      stroke_color: B91C1C
+      size: 20
+sidebar:
+  background_color: $brand_light
+  border_color: $brand_rule
+  border_width: 0.5
+  border_radius: 3
+  padding: [10, 12, 10, 12]
+  title:
+    font_family: Noto Sans
+    font_color: $brand_title
+    font_size: 10.5
+    text_align: left
+quote:
+  font_size: 10
+  font_color: $brand_muted
+  border_left_color: $brand_primary
+  border_left_width: 2
+  cite:
+    font_color: $brand_muted
+table:
+  font_size: 8.75
+  border_color: $brand_rule
+  grid_color: $brand_rule
+  cell_padding: [3, 5, 3, 5]
+  head:
+    font_family: Noto Sans
+    font_style: bold
+    background_color: $brand_subtle
+    font_color: $brand_title
+    border_bottom_width: 1.25
+    border_bottom_color: $brand_primary
+  body:
+    stripe_background_color: $brand_light
+list:
+  indent: 16
+  item_spacing: 3
+description_list:
+  term_font_family: Noto Sans
+  term_font_color: $brand_title
+toc:
+  font_family: Noto Sans
+  font_size: 9.5
+  line_height: 1.35
+  h1_font_style: bold
+  h1_font_color: $brand_primary
+  h2_font_style: bold
+  dot_leader:
+    font_color: BBBBBB
+role:
+  # Decision statuses: [.decided]#DECIDED#, [.pending]#PENDING# and so on
+  decided:
+    font_style: bold
+    font_size: 0.8em
+    font_color: $status_decided
+  proposed:
+    font_style: bold
+    font_size: 0.8em
+    font_color: $status_proposed
+  pending:
+    font_style: bold
+    font_size: 0.8em
+    font_color: $status_pending
+  deferred:
+    font_style: bold
+    font_size: 0.8em
+    font_color: $status_deferred
+  rejected:
+    font_style: bold
+    font_size: 0.8em
+    font_color: $status_rejected
+  superseded:
+    font_style: bold_italic
+    font_size: 0.8em
+    font_color: $status_superseded
+  # Kinds of statements: [.fact]#FACT#, [.assumption]#ASSUMPTION#, [.decision]#DECISION#
+  fact:
+    font_style: bold
+    font_size: 0.8em
+    font_color: 2E8540
+  assumption:
+    font_style: bold
+    font_size: 0.8em
+    font_color: B26A00
+  decision:
+    font_style: bold
+    font_size: 0.8em
+    font_color: $brand_primary
+  term:
+    font_style: italic
+header:
+  height: 0.55in
+  font_family: Noto Sans
+  font_size: 8
+  font_color: $brand_muted
+  border_color: $brand_rule
+  border_width: 0.25
+  vertical_align: bottom
+  padding: [0, 0, 4, 0]
+  recto:
+    right:
+      content: '{section-or-chapter-title}'
+  verso:
+    left:
+      content: '{chapter-title}'
+footer:
+  height: 0.55in
+  font_family: Noto Sans
+  font_size: 8.5
+  font_color: $brand_muted
+  border_width: 0
+  vertical_align: top
+  padding: [6, 0, 0, 0]
+  recto:
+    left:
+      content: '{document-title} {revnumber}'
+    right:
+      content: '{page-number}'
+  verso:
+    left:
+      content: '{page-number}'
+    right:
+      content: '{document-title} {revnumber}'
+footnotes:
+  font_size: 8
+  item_spacing: 2

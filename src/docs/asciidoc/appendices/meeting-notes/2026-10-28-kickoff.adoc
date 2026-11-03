@@ -1,0 +1,48 @@
+[#meeting-2026-10-28-kickoff,reftext=kick-off 2026-10-28]
+== 2026-10-28: Kick-off
+
+Source:: `inbox/2026-10-28-kickoff-transcript.txt`, a Microsoft Teams transcript, reviewed.
+
+Participants:: Head of Digital Channels (sponsor, chair), Contact Center Lead, Enterprise Architect,
+Information Security Lead, {system} Product Owner, Data Protection Officer, Model Risk Manager.
+
+Summary:: The meeting set the scope of the {feature}: a read-only chat for signed-in customers,
+inside the existing web and mobile apps, answering from approved content and the customer's own
+data, on Azure OpenAI, with handover to the contact center. It rejected fine-tuning on transcripts,
+deferred voice, and asked the architects for evaluated alternatives for the solution pattern and
+the models.
+
+Facts::
+* Most answers to routine questions are already in the bank's help content; customers do not find
+  them. (Head of Digital Channels)
+* Azure OpenAI in the bank's tenant is the approved source of language models; others need an
+  exception. (Enterprise Architect)
+* Customer data stays in the bank's regions, behind private endpoints: the landing zone standard.
+  (Information Security Lead)
+
+Decisions::
+* Azure OpenAI is the source of language models: <<adr-001>>. (Head of Digital Channels, confirming
+  the cloud strategy)
+* The chat is part of the web and mobile apps, for signed-in customers; the standalone chat app of
+  the pre-study is dropped: <<adr-010>>, superseding <<adr-009>>. (Head of Digital Channels)
+* The first release is read-only: <<adr-005>>. (Head of Digital Channels)
+* No fine-tuning on contact-center transcripts: <<adr-006>>. (Head of Digital Channels, on the DPO's
+  advice)
+* Voice after general availability: <<adr-008>>. (Head of Digital Channels)
+
+Assumptions::
+* <<a-01>>: a large share of routine contacts could be resolved by the assistant. The Contact Center
+  Lead could not give the split by topic.
+* <<a-04>>: the contact center platform accepts chats from an external channel; to be confirmed
+  with the vendor.
+
+Open questions::
+* <<oq-04>>: retention of conversations. (Data Protection Officer)
+* <<oq-05>>: languages besides English, and when. (Head of Digital Channels)
+* <<oq-07>>: whether the assistant is a model under the model risk policy. (Model Risk Manager)
+
+Actions::
+* Classify a month of contacts by topic. Contact Center Lead. No date stated.
+* Lay out the alternatives, with criteria, for the solution pattern and the models, and bring a
+  recommendation to the Architecture Review Board. Architects. Before the next meeting.
+* Next meeting in two weeks.

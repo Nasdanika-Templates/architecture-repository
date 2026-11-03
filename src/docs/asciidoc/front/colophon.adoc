@@ -1,0 +1,28 @@
+[colophon]
+== Colophon
+
+*Architecture Repository: Architecture as Code with AI Assistance*
+
+Version {revnumber}, built on {revdate}.
+
+This document is compiled from the sources in the repository below. Every published version is in
+two formats, built from the same commit:
+
+[horizontal]
+HTML:: {project-url}
+PDF:: {project-url}{pdf-name}
+Source:: {scm-url}
+
+The HTML is one self-contained file: it can be saved, mailed and opened offline. The PDF is the
+version to share for comments, to attach to an approval request and to archive.
+
+The template's structural files and build scripts are licensed under the MIT License. The
+architecture documentation and other content that you author or generate with the template belong
+to you and may be licensed or kept proprietary at your discretion.
+
+Names of products, frameworks and certifications, such as TOGAF, PMP, CPMAI, AIGP, Azure and
+OpenAI, may be trademarks of their owners. Their use here identifies the subjects discussed and
+implies no endorsement.
+
+Typeset with Asciidoctor PDF in Noto Sans and M+ 1mn, in a look derived from the Nasdanika Zephyr
+Books. Diagrams are PlantUML, with the C4-PlantUML library.

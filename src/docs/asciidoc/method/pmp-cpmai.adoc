@@ -1,0 +1,97 @@
+[#pmp-cpmai]
+= PMP and CPMAI Alignment
+
+The repository is not only for architects. A project manager running several projects can give each
+project a repository, or a folder in a shared one, built from this template. Every project is then
+documented the same way: the same structure, the same registers, the same published PDF, the same
+history. The assistant does the clerical work: converting meetings, updating registers, flagging
+what changed since the last steering committee.
+
+[#pmbok]
+== PMBOK Performance Domains
+
+The PMBOK Guide, Seventh Edition, organizes project management into eight performance domains. Each
+has a home in the repository.
+
+[cols="2,4"]
+|===
+|Performance domain |In the repository
+
+|Stakeholders
+|Stakeholders and their concerns in <<vision>>; meeting participants by role in <<meeting-notes>>.
+
+|Team
+|Owners of decisions, assumptions, open questions and actions; commit authors.
+
+|Development Approach and Life Cycle
+|The phases of <<roadmap>>; the CPMAI phases below for the AI work.
+
+|Planning
+|<<roadmap>>; work packages, which become Jira epics.
+
+|Project Work
+|Meeting notes and actions; the commit history as the log of the work.
+
+|Delivery
+|Scope and success measures in <<vision>>; the published, versioned document as a deliverable.
+
+|Measurement
+|Success measures in <<vision>>; status pulled from Jira at build time
+(<<external-information>>), compared between builds.
+
+|Uncertainty
+|<<assumptions>>, <<open-questions>>, PENDING decisions, and the AI risks in <<ai-risk>>.
+|===
+
+[#cpmai]
+== CPMAI Phases
+
+CPMAI, the Cognitive Project Management for AI methodology, adapts the iterative, data-centric
+CRISP-DM cycle to AI projects. Its first question is whether AI is the right answer at all, and its
+phases are iterated in small cycles rather than run once.
+
+[cols="2,4"]
+|===
+|CPMAI phase |In the repository
+
+|I. Business Understanding
+|<<vision>>: the problem, the AI pattern, the success measures, and the go/no-go question, "is AI
+the right solution here?", answered explicitly. <<business>>.
+
+|II. Data Understanding
+|<<data>>: which data the solution needs, where it lives, who owns it, its quality and its
+classification.
+
+|III. Data Preparation
+|<<data>>: the ingestion and chunking pipeline; work packages in <<roadmap>>.
+
+|IV. Model Development
+|<<alternatives>>: the choice of models and of the solution pattern, then prompt and retrieval
+design. In a RAG solution, "model development" is mostly configuration and prompt engineering, not
+training.
+
+|V. Model Evaluation
+|The evaluation plan in <<ai-risk>>: the golden question set, groundedness, safety and latency
+thresholds; the evaluations that close the PENDING model decisions.
+
+|VI. Model Operationalization
+|<<technology>> and <<ai-risk>>: deployment, monitoring, drift, human escalation, retirement of
+model versions.
+|===
+
+CPMAI also classifies AI projects by pattern. The sample is the _conversation and human
+interaction_ pattern, with elements of _recognition_ in its intent detection. Naming the pattern
+early helps: projects with the same pattern have similar data needs and similar risks.
+
+[#portfolio]
+== One Template, Many Projects
+
+For a portfolio:
+
+* *A repository per project*, created from this template, when projects have different teams and
+  different access rights.
+* *A folder per project* in one repository, each with its own `index.adoc`, when the same people
+  run them. A portfolio document can include the vision and the decision log of each project, and the
+  build fails when one of them breaks.
+* *The same prompts everywhere.* Keep the prompts in `prompts/` identical across projects, and
+  improve them in one place, so that every project's documentation improves with them.

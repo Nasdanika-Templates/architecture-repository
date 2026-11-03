@@ -1,0 +1,64 @@
+[#context]
+= System Context
+
+_C4 level 1. ADM Phase A._
+
+The {system} of the C4 model's example lets personal banking customers view their accounts and
+make payments. It gets account information from, and makes payments through, the Mainframe Banking
+System, and sends e-mail through the bank's Microsoft Exchange system. The {feature} is a new
+capability inside the {system}; <<context-diagram>> shows the context with the new external
+dependencies it brings.
+
+[#context-diagram]
+.System context: the {system} with the {feature}
+[plantuml,context,svg,pdfwidth=100%]
+----
+!include <C4/C4_Context>
+
+LAYOUT_TOP_DOWN()
+
+Person(customer, "Personal Banking Customer", "A customer of the bank, with personal bank accounts")
+Person(agent, "Contact Center Agent", "Answers customers' questions and takes over chats")
+
+System(ibs, "Internet Banking System", "Allows customers to view information about their accounts and make payments; NEW: answers questions in an AI chat")
+
+System_Ext(mainframe, "Mainframe Banking System", "Stores all of the core banking information about customers, accounts, transactions")
+System_Ext(email, "E-mail System", "The internal Microsoft Exchange e-mail system")
+System_Ext(aoai, "Azure OpenAI", "Chat and embedding models, in the bank's tenant")
+System_Ext(contact, "Contact Center Platform", "Queues, routing and agent desktop")
+System_Ext(cms, "Content Management System", "The bank's approved help and product content")
+
+Rel(customer, ibs, "Views accounts, makes payments, chats with the assistant using")
+Rel(ibs, mainframe, "Gets account information from, makes payments using")
+Rel(ibs, email, "Sends e-mail using")
+Rel(email, customer, "Sends e-mails to")
+Rel(ibs, aoai, "Generates answers and embeddings using", "private endpoint")
+Rel(ibs, contact, "Hands chats over to", "HTTPS")
+Rel(agent, contact, "Takes over chats in")
+Rel(ibs, cms, "Ingests approved content from")
+----
+
+[#context-new]
+== What Is New
+
+[cols="2,4"]
+|===
+|Element |Role in the {feature}
+
+|Azure OpenAI
+|[.decision]#DECISION# The only source of language models (<<adr-001>>). Provides the chat model that
+writes the answers and the embedding model that indexes the content.
+
+|Contact Center Platform
+|Receives the handover: the conversation so far and the customer's identity. The platform and its
+API are [.assumption]#ASSUMPTION# able to accept chats from an external channel (<<a-04>>).
+
+|Content Management System
+|The source of the approved content the assistant answers from. Only published content is ingested.
+
+|Contact Center Agent
+|A new actor in the context: takes over conversations the assistant hands over.
+|===
+
+The Mainframe Banking System and the E-mail System are unchanged. The assistant reaches the
+mainframe only through the existing API application, read-only (<<adr-005>>).

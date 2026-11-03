@@ -1,0 +1,99 @@
+[#external-information]
+= External Information
+
+Some of what the document should say lives in other systems: the status of the work in Jira, the
+code in source repositories, the resources in the cloud, the results of model evaluations. Copying
+it by hand is how documents go stale. Instead, the build can pull it, at a given point in time, and
+generate AsciiDoc that the document includes.
+
+It is the same pattern as the evaluations in <<evaluations>>, with the data outside the repository
+instead of inside it: data in, AsciiDoc out, and the document as the reporting surface that binds
+the results to decisions.
+
+[#snapshots]
+== Snapshots
+
+A snapshot is the state of an external system as of one moment, written as AsciiDoc and data files
+under `snapshots/<date>/`:
+
+. *Pull.* A build step queries the system, for example Jira's REST API with a JQL query for the
+  project's epics, and writes the raw result, such as JSON, to `snapshots/2026-11-03/jira.json`.
+. *Generate.* The step turns the raw data into AsciiDoc: a table of epics with statuses, counts by
+  status, and charts rendered as SVG.
+. *Commit.* The snapshot is committed. The document of any version then shows the external state
+  as it was when that version was built, not as it is when someone reads it.
+. *Compare.* Each run reads the previous snapshot and generates the differences: what was added,
+  what moved, what is late.
+
+Credentials come from environment variables or the CI system's secrets, never from the repository.
+Pulling is a separate Maven profile, for example `mvn package -Psnapshot`, so a normal build works
+offline and is reproducible from what is committed.
+
+[#as-of]
+== As of a Date
+
+Snapshots answer the question "what was the state on that date?", which most work-tracking tools
+answer poorly. Jira keeps each issue's change history, and JQL's `WAS` operator can ask about a
+few fields in the past, for example `status WAS "In Progress" ON "2026-10-01"`, but there is no
+general point-in-time view of a project: its scope, its estimates and its reports as they were on a
+given day. Committed snapshots provide one, and comparing two of them gives a report that no single
+system can.
+
+[#snapshot-example]
+== Example
+
+What a generated snapshot looks like in the document. The figures are illustrative; the sample
+project has no Jira.
+
+.Work packages as of 2026-11-03, compared with 2026-10-27 (illustrative)
+[cols="1,3,1,1,1"]
+|===
+|Epic |Work package |Status |Previous |Change
+
+|IBSAI-1
+|Landing zone and private networking
+|In Progress
+|To Do
+|started
+
+|IBSAI-2
+|Content ingestion and indexing
+|To Do
+|To Do
+|
+
+|IBSAI-3
+|Chat orchestrator and read-only account tools
+|To Do
+|To Do
+|
+
+|IBSAI-4
+|Evaluation harness and golden question set
+|In Progress
+|In Progress
+|
+
+|IBSAI-5
+|Model risk and AI governance review
+|To Do
+|-
+|added
+|===
+
+[#across-systems]
+== Across Systems
+
+The same pattern works for any system with an API, and the value grows when systems are combined:
+
+* *Source repositories:* which ADRs are referenced from code and configuration; activity per
+  component.
+* *Cloud infrastructure:* the resources actually deployed, from Azure Resource Graph or
+  `az` queries, compared with <<technology>>, which is a drift report between the architecture and
+  reality.
+* *Evaluation results:* groundedness and retrieval scores from the evaluation harness, per model
+  and per version, which close the PENDING model decisions with evidence.
+* *Service management and CMDB:* incidents and changes that touch the system.
+
+Each source becomes a generated chapter or appendix, and each build is a dated, versioned report
+across all of them.

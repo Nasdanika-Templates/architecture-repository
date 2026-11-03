@@ -1,0 +1,288 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<!--
+		An architecture repository as code: AsciiDoc sources in src/docs/asciidoc, compiled into one
+		document, as a PDF and as a single-file HTML page.
+
+			mvn clean package
+
+		writes target/site/index.html and target/site/${project.artifactId}-${project.version}.pdf, the
+		files the GitHub workflow publishes to GitHub Pages at the project URL below.
+
+		When you create a repository from this template, change the groupId, the artifactId, the name,
+		the url and the scm, and start the version over.
+	-->
+	<groupId>org.nasdanika.templates</groupId>
+	<artifactId>architecture-repository</artifactId>
+	<version>2026.11.0</version>
+	<packaging>pom</packaging>
+	<name>Architecture Repository</name>
+	<description>Architecture as code with AI assistance and AsciiDoc: a template for a Git-based architecture repository.</description>
+	<url>https://nasdanika-templates.github.io/architecture-repository/</url>
+
+	<licenses>
+		<license>
+			<name>MIT License</name>
+			<url>https://opensource.org/license/mit</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
+	<scm>
+		<url>https://github.com/Nasdanika-Templates/architecture-repository</url>
+	</scm>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven.build.timestamp.format>yyyy-MM-dd</maven.build.timestamp.format>
+
+		<!-- The published file names: the HTML is the site's index page, the PDF keeps the artifact's name -->
+		<document.name>${project.artifactId}-${project.version}</document.name>
+		<site.dir>${project.build.directory}/site</site.dir>
+
+		<!-- Brand inputs and the look built from them -->
+		<brand.logo>${project.basedir}/branding/logo.png</brand.logo>
+		<theme.dir>${project.basedir}/theme</theme.dir>
+
+		<!-- Where tools/Evaluations.java writes the reports generated from src/evaluations -->
+		<evaluations.dir>${project.build.directory}/generated-docs/evaluations</evaluations.dir>
+
+		<!-- Editor's notes ([IMPORTANT,caption="Editor's note"] under ifdef::editor-notes[]); false leaves them out -->
+		<document.editor-notes>true</document.editor-notes>
+
+		<asciidoctor.maven.plugin.version>3.2.0</asciidoctor.maven.plugin.version>
+		<asciidoctorj.version>3.0.1</asciidoctorj.version>
+		<asciidoctorj.pdf.version>2.3.27</asciidoctorj.pdf.version>
+		<asciidoctorj.diagram.version>3.2.1</asciidoctorj.diagram.version>
+		<asciidoctorj.diagram.plantuml.version>1.2026.2</asciidoctorj.diagram.plantuml.version>
+	</properties>
+
+	<dependencies>
+		<!-- For tools/Evaluations.java, which reads src/evaluations; the build packages nothing -->
+		<dependency>
+			<groupId>org.yaml</groupId>
+			<artifactId>snakeyaml</artifactId>
+			<version>2.5</version>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-enforcer-plugin</artifactId>
+				<version>3.6.3</version>
+				<executions>
+					<execution>
+						<id>enforce</id>
+						<goals>
+							<goal>enforce</goal>
+						</goals>
+						<configuration>
+							<rules>
+								<requireMavenVersion>
+									<version>3.9</version>
+								</requireMavenVersion>
+								<!-- The logo tool uses text blocks and the source launcher -->
+								<requireJavaVersion>
+									<version>17</version>
+								</requireJavaVersion>
+							</rules>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<!-- The logo as a data URI, so the HTML stays a single file; declared before antrun, which needs it -->
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>exec-maven-plugin</artifactId>
+				<version>3.6.4</version>
+				<executions>
+					<execution>
+						<id>logo-css</id>
+						<phase>generate-resources</phase>
+						<goals>
+							<goal>exec</goal>
+						</goals>
+						<configuration>
+							<executable>${java.home}/bin/java</executable>
+							<arguments>
+								<argument>-Djava.awt.headless=true</argument>
+								<argument>${project.basedir}/tools/LogoCss.java</argument>
+								<argument>${brand.logo}</argument>
+								<argument>${project.build.directory}/theme/logo.css</argument>
+							</arguments>
+						</configuration>
+					</execution>
+					<execution>
+						<!-- The evaluations in src/evaluations, as AsciiDoc reports and attributes the document refers to -->
+						<id>evaluations</id>
+						<phase>generate-resources</phase>
+						<goals>
+							<goal>exec</goal>
+						</goals>
+						<configuration>
+							<executable>${java.home}/bin/java</executable>
+							<arguments>
+								<argument>-classpath</argument>
+								<classpath />
+								<argument>${project.basedir}/tools/Evaluations.java</argument>
+								<argument>${project.basedir}/src/evaluations</argument>
+								<argument>${evaluations.dir}</argument>
+							</arguments>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<version>3.1.0</version>
+				<executions>
+					<execution>
+						<!-- Bootswatch Zephyr, the logo, the bridge, the document's styles and the brand in one stylesheet, for Asciidoctor to embed -->
+						<id>stylesheet</id>
+						<phase>generate-resources</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<target>
+								<concat destfile="${project.build.directory}/theme/architecture.css" encoding="UTF-8" outputencoding="UTF-8" fixlastline="yes">
+									<filelist dir="${theme.dir}/zephyr" files="bootstrap.min.css,zephyr-bridge.css"/>
+									<filelist dir="${project.build.directory}/theme" files="logo.css"/>
+									<filelist dir="${theme.dir}" files="architecture.css,brand.css"/>
+								</concat>
+							</target>
+						</configuration>
+					</execution>
+					<execution>
+						<!-- What GitHub Pages serves: the HTML as index.html, the PDF under its own name -->
+						<id>site</id>
+						<phase>package</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<target>
+								<copy file="${project.build.directory}/document/${document.name}.html" tofile="${site.dir}/index.html"/>
+								<copy file="${project.build.directory}/document/${document.name}.pdf" todir="${site.dir}"/>
+								<!-- Tells GitHub Pages not to run Jekyll over the files -->
+								<touch file="${site.dir}/.nojekyll"/>
+							</target>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.asciidoctor</groupId>
+				<artifactId>asciidoctor-maven-plugin</artifactId>
+				<version>${asciidoctor.maven.plugin.version}</version>
+				<dependencies>
+					<dependency>
+						<groupId>org.asciidoctor</groupId>
+						<artifactId>asciidoctorj</artifactId>
+						<version>${asciidoctorj.version}</version>
+					</dependency>
+					<dependency>
+						<groupId>org.asciidoctor</groupId>
+						<artifactId>asciidoctorj-pdf</artifactId>
+						<version>${asciidoctorj.pdf.version}</version>
+					</dependency>
+					<dependency>
+						<groupId>org.asciidoctor</groupId>
+						<artifactId>asciidoctorj-diagram</artifactId>
+						<version>${asciidoctorj.diagram.version}</version>
+					</dependency>
+					<dependency>
+						<groupId>org.asciidoctor</groupId>
+						<artifactId>asciidoctorj-diagram-plantuml</artifactId>
+						<version>${asciidoctorj.diagram.plantuml.version}</version>
+					</dependency>
+				</dependencies>
+				<configuration>
+					<sourceDirectory>${project.basedir}/src/docs/asciidoc</sourceDirectory>
+					<sourceDocumentName>index.adoc</sourceDocumentName>
+					<outputDirectory>${project.build.directory}/document</outputDirectory>
+					<doctype>book</doctype>
+					<requires>
+						<require>asciidoctor-diagram</require>
+					</requires>
+					<!--
+						The document is compiled: a missing include, a missing attribute or a broken
+						cross-reference fails the build. Asciidoctor reports a broken cross-reference
+						("possible invalid reference") at INFO, and only in verbose mode.
+					-->
+					<enableVerbose>true</enableVerbose>
+					<logHandler>
+						<outputToConsole>true</outputToConsole>
+						<failIf>
+							<severity>INFO</severity>
+						</failIf>
+					</logHandler>
+					<attributes>
+						<revnumber>${project.version}</revnumber>
+						<revdate>${maven.build.timestamp}</revdate>
+						<project-name>${project.name}</project-name>
+						<artifact-id>${project.artifactId}</artifact-id>
+						<project-url>${project.url}</project-url>
+						<scm-url>${project.scm.url}</scm-url>
+						<pdf-name>${document.name}.pdf</pdf-name>
+						<repository-root>${project.basedir}</repository-root>
+						<evaluations-dir>${evaluations.dir}</evaluations-dir>
+						<editor-notes>${document.editor-notes}</editor-notes>
+						<attribute-missing>warn</attribute-missing>
+						<source-highlighter>rouge</source-highlighter>
+						<sectanchors>true</sectanchors>
+						<idprefix />
+						<idseparator>-</idseparator>
+						<xrefstyle>short</xrefstyle>
+						<experimental>true</experimental>
+						<imagesdir>images</imagesdir>
+						<plantumlconfig>${project.basedir}/src/docs/asciidoc/diagrams/plantuml.cfg</plantumlconfig>
+						<diagram-cachedir>${project.build.directory}/diagram-cache</diagram-cachedir>
+					</attributes>
+				</configuration>
+				<executions>
+					<execution>
+						<id>pdf</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>process-asciidoc</goal>
+						</goals>
+						<configuration>
+							<backend>pdf</backend>
+							<outputFile>${document.name}.pdf</outputFile>
+							<attributes>
+								<pdf-themesdir>${theme.dir}/pdf</pdf-themesdir>
+								<pdf-theme>architecture</pdf-theme>
+								<icons>font</icons>
+							</attributes>
+						</configuration>
+					</execution>
+					<execution>
+						<id>html</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>process-asciidoc</goal>
+						</goals>
+						<configuration>
+							<backend>html5</backend>
+							<outputFile>${document.name}.html</outputFile>
+							<attributes>
+								<!-- A single file: the stylesheet and every image embedded, no icon font from a CDN -->
+								<stylesdir>${project.build.directory}/theme</stylesdir>
+								<stylesheet>architecture.css</stylesheet>
+								<toc>left</toc>
+								<toclevels>3</toclevels>
+								<data-uri>true</data-uri>
+							</attributes>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+</project>

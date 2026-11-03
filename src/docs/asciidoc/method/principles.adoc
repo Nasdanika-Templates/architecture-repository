@@ -1,0 +1,73 @@
+[#principles]
+= Principles
+
+Architecture work produces a lot of text: context, options, trade-offs, decisions, assumptions,
+open questions, notes from meetings. An AI assistant is good at producing and reorganizing text,
+and poor at being accountable for it. The method assigns the work accordingly. It rests on four
+principles.
+
+[#ai-drafts-people-decide]
+== AI Drafts, People Decide
+
+The assistant drafts: a section from a prompt, an AsciiDoc page from a meeting transcript, a list of
+alternatives with criteria and a ranking, a glossary entry, a review of the document for
+inconsistencies. People decide: which alternative, which risk to accept, what is in scope, whether
+the draft is right.
+
+Two consequences follow.
+
+* A ranking produced by the assistant is an input to a decision, never the decision. In the sample,
+  the assistant ranks the chat models (<<chat-models>>), and the decision stays
+  [.pending]#PENDING# until an evaluation on the bank's own data and a named owner close it.
+* Every change the assistant makes is reviewed before it is committed, as a diff
+  (<<review-changes>>). The commit is made by a person, who owns it.
+
+[#everything-is-text]
+== Everything Is Text, Under Version Control
+
+The sources of the document are text: AsciiDoc for prose and tables, PlantUML for diagrams, Markdown
+for prompts, YAML for the theme. Meeting transcripts and notes are text files in the repository.
+External information, such as the status of Jira issues, is pulled into text files at build time
+(<<external-information>>).
+
+Text is what an assistant reads and writes best, what Git diffs and merges, and what survives tool
+changes. A diagram drawn as code can be reviewed line by line; a diagram pasted as a picture cannot.
+
+Version control gives the rest for free: who changed what and when, why (the commit message), the
+state of the architecture at any past date (a tag or a commit), parallel proposals (branches) and
+a review process (pull requests).
+
+[#regenerate-dont-patch]
+== Regenerate, Don't Patch
+
+When an input changes, regenerate what depends on it; do not patch the output by hand and hope the
+rest still agrees.
+
+* *Generated content stays generated.* Content produced by a tool, such as a Jira snapshot or the
+  documentation of a model, is rebuilt from its source, never edited. The fix goes into the source
+  or the generator.
+* *Drafted content is redrafted from its inputs.* When a meeting changes the scope, give the
+  assistant the new meeting note and ask it to bring every affected section in line, then review
+  the diff. Patching one paragraph leaves the summary, the context diagram, the alternatives and the
+  glossary telling the old story.
+* *Prompts are inputs too.* Keep the prompts that shaped the document in `prompts/`, so a section
+  can be regenerated, and its rationale reconstructed, later.
+
+Regeneration is cheap with an assistant and safe with Git: the diff shows exactly what moved.
+
+[#separate-fact-assumption-decision]
+== Separate Fact, Assumption, and Decision
+
+Most architecture documents blur three kinds of statements, and the blur is where projects get
+hurt: an assumption reads like a fact and is never validated, or a preference reads like a decision
+nobody made.
+
+[horizontal]
+Fact:: Has a source that a reader can check.
+Assumption:: Has an owner, a way to validate it and a date by which it must be validated. Lives in
+<<assumptions>>.
+Decision:: Has an owner, a status, the alternatives considered and the reason. Lives in
+<<decision-log>>.
+
+Everything else is an open question (<<open-questions>>). Ask the assistant to classify statements
+when it converts a meeting note, and to flag any that it cannot classify.

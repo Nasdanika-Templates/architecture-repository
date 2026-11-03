@@ -1,0 +1,144 @@
+[#application]
+= Application Architecture
+
+_C4 levels 2 and 3. ADM Phase C._
+
+The application architecture follows the recommended solution pattern, a custom retrieval-augmented
+orchestrator (<<solution-patterns>>), which is [.proposed]#PROPOSED# in <<adr-002>>. If the managed
+agent service is chosen instead, the Chat Orchestrator is largely replaced by configuration of that
+service, and the rest of this chapter stays.
+
+[#containers]
+== Containers
+
+[#container-diagram]
+.Containers: the {system} with the {feature}
+[plantuml,containers,svg,pdfwidth=100%]
+----
+!include <C4/C4_Container>
+
+LAYOUT_TOP_DOWN()
+
+Person(customer, "Personal Banking Customer")
+
+System_Boundary(ibs, "Internet Banking System") {
+  Container(spa, "Single-Page Application", "JavaScript, Angular", "The banking UI in the browser, with the NEW chat panel")
+  Container(mobile, "Mobile App", "Xamarin", "The banking UI on mobile devices, with the NEW chat screen")
+  Container(api, "API Application", "Java, Spring MVC", "The banking API; NEW read-only endpoints for the assistant's tools")
+  Container(orchestrator, "Chat Orchestrator", "Java, Spring Boot", "NEW: runs the conversation, retrieves content, calls tools and the model, applies guardrails")
+  Container(ingestion, "Content Ingestion Job", "Java, scheduled", "NEW: exports, chunks, embeds and indexes approved content")
+  ContainerDb(index, "Content Index", "Azure AI Search", "NEW: passages of approved content with vectors and metadata")
+  ContainerDb(conversations, "Conversation Store", "Azure Cosmos DB", "NEW: conversations, feedback and handover state")
+}
+
+System_Ext(mainframe, "Mainframe Banking System")
+System_Ext(aoai, "Azure OpenAI", "Chat and embedding models")
+System_Ext(safety, "Azure AI Content Safety", "Content filters, prompt shields")
+System_Ext(contact, "Contact Center Platform")
+System_Ext(cms, "Content Management System")
+
+Rel(customer, spa, "Chats using", "HTTPS")
+Rel(customer, mobile, "Chats using")
+Rel(spa, orchestrator, "Sends messages to, streams answers from", "JSON/HTTPS, SSE")
+Rel(mobile, orchestrator, "Sends messages to, streams answers from", "JSON/HTTPS, SSE")
+Rel(orchestrator, index, "Searches", "hybrid: keyword + vector")
+Rel(orchestrator, api, "Reads accounts and transactions using", "JSON/HTTPS, customer token")
+Rel(orchestrator, aoai, "Generates answers using", "private endpoint")
+Rel(orchestrator, safety, "Screens prompts and answers using")
+Rel(orchestrator, conversations, "Reads from and writes to")
+Rel(orchestrator, contact, "Hands over to")
+Rel(api, mainframe, "Reads from", "XML/HTTPS")
+Rel(ingestion, cms, "Exports published content from")
+Rel(ingestion, aoai, "Embeds passages using")
+Rel(ingestion, index, "Writes to")
+----
+
+The existing Web Application and database of the C4 example are unchanged and left out of the
+diagram. The API Application gains read-only endpoints shaped for the assistant's tools: recent
+transactions with merchant and fee details, account summaries, card status. They reuse the
+existing authorization: the orchestrator passes the customer's token, and never holds a credential
+of its own that could read another customer's data (<<adr-005>>).
+
+[#components]
+== Chat Orchestrator Components
+
+[#component-diagram]
+.Components of the Chat Orchestrator
+[plantuml,components,svg,pdfwidth=100%]
+----
+!include <C4/C4_Component>
+
+LAYOUT_TOP_DOWN()
+
+Container(spa, "Single-Page Application / Mobile App", "")
+Container(api, "API Application", "Java, Spring MVC")
+ContainerDb(index, "Content Index", "Azure AI Search")
+ContainerDb(conversations, "Conversation Store", "Azure Cosmos DB")
+System_Ext(aoai, "Azure OpenAI")
+System_Ext(safety, "Azure AI Content Safety")
+System_Ext(contact, "Contact Center Platform")
+
+Container_Boundary(orchestrator, "Chat Orchestrator") {
+  Component(endpoint, "Conversation Endpoint", "Spring WebFlux", "Authenticates the session, streams answers")
+  Component(guard, "Guardrails", "", "Input and output screening, topic policy, PII redaction in telemetry")
+  Component(router, "Intent and Topic Router", "", "Detects sensitive topics and handover requests")
+  Component(retriever, "Retriever", "", "Hybrid search over approved content, with citations")
+  Component(tools, "Account Tools", "", "Read-only functions the model may call, mapped to API endpoints")
+  Component(composer, "Answer Composer", "", "Builds the prompt, calls the chat model, checks grounding")
+  Component(handover, "Handover", "", "Transfers the conversation and its summary to an agent")
+}
+
+Rel(spa, endpoint, "Sends messages to")
+Rel(endpoint, guard, "Screens through")
+Rel(guard, safety, "Uses")
+Rel(endpoint, router, "Routes through")
+Rel(router, handover, "Hands sensitive topics to")
+Rel(router, composer, "Passes questions to")
+Rel(composer, retriever, "Gets passages from")
+Rel(retriever, index, "Searches")
+Rel(composer, tools, "Calls")
+Rel(tools, api, "Reads from")
+Rel(composer, aoai, "Calls")
+Rel(endpoint, conversations, "Stores turns in")
+Rel(handover, contact, "Transfers to")
+----
+
+[#chat-flow]
+== Answering a Question
+
+<<chat-sequence>> shows the main flow, for a question that needs both approved content and the
+customer's own data.
+
+[#chat-sequence]
+.Answering "Why was I charged $15 on 2 October?"
+[plantuml,chat-sequence,svg,pdfwidth=100%]
+----
+actor Customer
+participant "Single-Page\nApplication" as SPA
+participant "Chat\nOrchestrator" as O
+participant "Content\nSafety" as CS
+participant "Content\nIndex" as IX
+participant "Azure\nOpenAI" as AOAI
+participant "API\nApplication" as API
+
+Customer -> SPA: Why was I charged $15 on 2 October?
+SPA -> O: message, customer session
+O -> CS: screen input (prompt shield)
+CS --> O: allowed
+O -> IX: hybrid search "fee charged"
+IX --> O: passages: fee schedule
+O -> AOAI: question, passages, tool definitions
+AOAI --> O: call getTransactions(date=2 Oct)
+O -> API: GET transactions, customer token
+API --> O: "Overdraft fee $15"
+O -> AOAI: tool result
+AOAI --> O: answer with citations
+O -> CS: screen output, check grounding
+CS --> O: allowed
+O --> SPA: streamed answer, citations
+SPA --> Customer: "It was an overdraft fee: ..." + link to fee schedule
+----
+
+If the input is blocked, the topic is sensitive, the grounding check fails or the model asks for a
+tool it is not allowed to call, the orchestrator does not answer from the model: it offers a human
+and, with the customer's consent, hands over.

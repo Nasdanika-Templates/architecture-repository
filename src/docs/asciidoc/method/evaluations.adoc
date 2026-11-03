@@ -1,0 +1,128 @@
+[#evaluations]
+= Evaluations and Reactive Decisions
+
+Most architecture decisions rest on an evaluation: alternatives, criteria, weights, scores. In
+slides and wikis the evaluation is a table typed once, and the decision quotes its result. When a
+score changes, because a vendor answered a question or a benchmark came back, nobody retypes the
+table, and the decision goes on citing a ranking that no longer holds.
+
+Here, evaluations are data in the repository, and the document is their reporting surface.
+
+[#evaluations-as-data]
+== Evaluations as Data
+
+Each evaluation is a YAML file in `src/evaluations/`: the criteria, how they are weighted, the
+alternatives, a score for each alternative against each criterion with an optional reason, and
+what-if scenarios with other weights. The build reads the files and generates, for each one, an
+AsciiDoc report: the criteria and weights, the scores, the weighted totals, the ranking, the reasons
+and the sensitivity of the ranking to the weights. The sample has three: <<solution-patterns>>,
+<<embedding-models>> and <<chat-models>>.
+
+The build also generates attributes that the rest of the document refers to, for example:
+
+[cols="2,3",options="header"]
+|===
+|Attribute |Value in this build
+
+|`+{eval-chat-models-first}+`
+|{eval-chat-models-first}
+
+|`+{eval-chat-models-ranking}+`
+|{eval-chat-models-ranking}
+
+|`+{eval-solution-pattern-custom-rag-rank}+`
+|{eval-solution-pattern-custom-rag-rank}
+
+|`+{eval-solution-pattern-scenario-speed-first}+`
+|{eval-solution-pattern-scenario-speed-first}
+
+|`+{eval-solution-pattern-consistency-ratio}+`
+|{eval-solution-pattern-consistency-ratio}
+|===
+
+An attribute is also set when the top two alternatives are closer than the evaluation's
+`close-margin`, so the text can say that the ranking does not settle the choice. In the sample, all
+three evaluations are close calls, which is why none of their decisions is DECIDED.
+
+[#ahp]
+== Weights with AHP
+
+Weights are where evaluations are most easily bent: give a criterion five more points and the
+favorite wins. The Analytic Hierarchy Process (AHP), by Thomas Saaty, makes weighting harder to
+bend. Instead of assigning numbers to all criteria at once, the evaluators compare them two at a
+time: is security more important than time to market, and by how much, on a scale from 1, equal, to
+9, extremely more important. The weights are computed from the comparisons, and so is a
+_consistency ratio_ that exposes contradictory judgments, such as A over B, B over C and C over A.
+A ratio above 0.10 means the comparisons should be revisited.
+
+An evaluation sets `method: ahp` and gives the comparisons, or `method: direct` and gives the
+weights. The sample uses AHP for the solution pattern (<<eval-solution-pattern-comparisons>>) and
+direct weights for the models. Alternatives are rated against each criterion on a scale, AHP's
+ratings mode; full pairwise comparison of the alternatives is a possible extension of the tool.
+
+[#reactive]
+== Reactive Architecture
+
+The evaluations, the reports, the decisions and the text that cites them form a chain, recomputed by
+every build, like cells in a spreadsheet: change a value and everything that depends on it is
+recalculated.
+
+[plantuml,reactive,svg,pdfwidth=100%]
+----
+left to right direction
+skinparam rectangle {
+  BackgroundColor #F8F9FA
+  BorderColor #3459E6
+}
+rectangle "Evidence\n(evaluation runs,\nvendor answers,\nmeetings)" as evidence
+rectangle "Evaluation\nsrc/evaluations/*.yml" as evaluation
+rectangle "Generated report\nand attributes" as report
+rectangle "ADR\nbinds a choice" as adr
+rectangle "Decision log,\nroadmap, text" as text
+evidence --> evaluation : updates scores
+evaluation --> report : build
+report --> adr : rank of the choice
+adr --> text : status, choice
+----
+
+The binding is in the master document. An ADR names the alternative it chooses by its ID in the
+evaluation, and checks the choice against the ranking:
+
+[source,asciidoc]
+----
+\ifeval::[{eval-solution-pattern-custom-rag-rank} > 1]
+[CAUTION]
+====
+Revisit: the evaluation now ranks {eval-solution-pattern-custom-rag} number
+{eval-solution-pattern-custom-rag-rank}; {eval-solution-pattern-first} ranks first.
+====
+\endif::[]
+----
+
+When a new score or weight makes the chosen alternative lose first place, the ADR shows the caution
+in the next build: the decision is _revisitable_, and the document says when to revisit it. People
+still decide: the caution asks for a review; it does not change the decision
+(<<ai-drafts-people-decide>>). If an alternative is renamed or removed, the attributes that refer to
+it are missing and the build fails, so a decision cannot silently point to nothing.
+
+[#evaluation-documents]
+== Many Evaluations, One Master Document
+
+An evaluation can grow into a document of its own: a vendor assessment with a questionnaire, a
+proof of concept with measurements, a model evaluation with the golden question set. Each can be
+compiled and published separately, and owned by the people who run it (<<start-small>>, <<pocs>>). The master
+document includes their results, binds decisions to them, and fails to build when a binding breaks.
+
+The scores themselves can come from systems. The model evaluation harness can write the measured
+groundedness and latency into the evaluation file, the way snapshots bring in external information
+(<<external-information>>), so a new model version is evaluated, ranked and checked against the
+current decision in one build.
+
+[#evaluation-prompt]
+== Working with the Assistant
+
+Evaluations are a good fit for an assistant: proposing alternatives and criteria, drafting the
+pairwise comparisons, scoring with a reason per score, and proposing scenarios. Review the YAML diff
+as you would any other: the reasons first, then the numbers. Then ask the assistant to explain the
+consistency ratio, if the build rejects the comparisons, rather than to tweak numbers until it
+passes.

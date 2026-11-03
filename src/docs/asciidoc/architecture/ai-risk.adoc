@@ -1,0 +1,139 @@
+[#ai-risk]
+= AI Risk and Governance
+
+_CPMAI Phases V and VI. NIST AI RMF: Govern, Map, Measure, Manage._
+
+[#risk-classification]
+== Classification
+
+EU AI Act::
+[.proposed]#PROPOSED# A limited-risk system with transparency obligations: customers must be told
+that they are interacting with an AI (R-1). The assistant informs and hands over; it does not
+evaluate creditworthiness or make any decision about the customer, which would make it high-risk.
+The classification is for the AI Governance Board to confirm (<<adr-011>>).
+
+Model risk management::
+Whether the assistant is a model under the bank's model risk policy, and so subject to independent
+validation, is an open question for Model Risk Management (<<oq-07>>). The design assumes it will
+be: the evaluation plan below is written to be the basis of a validation.
+
+[#govern]
+== Govern: Roles
+
+[cols="2,4"]
+|===
+|Role |Accountable for
+
+|AI product owner (Digital Channels)
+|The assistant's behavior, the golden question set, the acceptance of residual risk.
+
+|AI Governance Board
+|Classification, approval to launch, periodic review.
+
+|Model Risk Management
+|Independent validation, if the assistant is in scope (<<oq-07>>).
+
+|Content owners
+|The accuracy and currency of the approved content the assistant answers from.
+
+|Contact Center
+|The handover, the sensitive topics list, the review of flagged conversations.
+|===
+
+[#map]
+== Map: Risks
+
+[cols="3,1,4",options="header"]
+|===
+|Risk |OWASP LLM |Mitigation
+
+|A wrong or invented answer about fees, terms or procedures
+|LLM09
+|Answers only from retrieved passages, with citations; grounding check before sending; refusal and
+handover when grounding fails; content owners keep content current (<<a-03>>).
+
+|A customer manipulates the assistant through the prompt
+|LLM01
+|Prompt shields; system prompt with strict scope; tools that are read-only and scoped to the
+customer's token, so a successful injection can read nothing new (<<adr-005>>).
+
+|Instructions hidden in ingested content
+|LLM01, LLM08
+|Only approved, published content is ingested; ingestion strips active content; content changes
+go through the existing publishing approval.
+
+|Personal data leaks into logs, prompts to other customers, or training
+|LLM02
+|Index the public, fetch the personal (<<data-principles>>); no training on conversations
+(<<adr-006>>); message text kept out of telemetry.
+
+|The assistant acts beyond its remit
+|LLM06
+|No write tools at all in the first release (<<adr-005>>); the tool list is an allow-list.
+
+|The system prompt or internal details are revealed
+|LLM07
+|Nothing secret in the system prompt; output screening for internal markers.
+
+|Runaway cost or denial of service
+|LLM10
+|Per-session and per-customer rate limits; token budgets per conversation; quota alerts.
+
+|A vulnerable customer is not recognized
+|-
+|Sensitive-topic detection with handover (R-5); topics list owned by the Contact Center.
+|===
+
+[#evaluation-plan]
+== Measure: Evaluation Plan
+
+The golden question set is a few hundred real, anonymized questions, with expected answers and
+sources, written and owned by the AI product owner with the Contact Center. It covers every use
+case, the sensitive topics, and adversarial prompts from the risks above.
+
+[cols="3,2,3",options="header"]
+|===
+|Metric |Threshold |Measured by
+
+|Groundedness: answers supported by the passages and tool results
+|[.assumption]#ASSUMPTION# at least 95% (<<a-08>>)
+|Automated groundedness evaluation, calibrated against a human-reviewed sample
+
+|Correctness on the golden set
+|[.assumption]#ASSUMPTION# at least 90% (<<a-08>>)
+|Human review of a stratified sample
+
+|Sensitive topics handed over
+|100% of the sensitive-topic questions in the set
+|Automated, from the router's decisions
+
+|Adversarial prompts resisted
+|No disclosure of other customers' data; no out-of-scope action
+|Red-team set, automated and manual
+
+|Retrieval recall at 5
+|Used to choose the embedding model (<<adr-003>>)
+|Automated, from the expected sources
+
+|Latency
+|R-7
+|Load test in pre-production
+|===
+
+The suite runs before launch, before every model or prompt change, and monthly on a sample of
+production conversations, with the results recorded in the repository as a snapshot
+(<<external-information>>).
+
+[#manage]
+== Manage: Oversight in Operation
+
+* *Transparency.* The chat says it is an AI, shows the sources of its answers, and offers a human
+  at every turn.
+* *Human oversight.* Conversation Oversight reviews a sample of conversations each week, and every
+  conversation flagged by a customer, a guardrail or an agent.
+* *Monitoring.* The metrics in <<operations>>, with thresholds that alert the AI product owner.
+* *Incidents.* A wrong answer that harmed a customer is handled as a complaint and as an AI incident:
+  root cause in the content, the retrieval, the prompt or the model; a fix; a new case in the golden
+  set.
+* *Kill switch.* The AI product owner can turn the chat off, leaving the contact center options, in
+  minutes and without a release.

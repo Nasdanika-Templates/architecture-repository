@@ -1,0 +1,22 @@
+[#adr-006,reftext=ADR-006]
+= ADR-006: Fine-Tune a Model on Contact-Center Transcripts
+
+Status:: [.rejected]#REJECTED# 2026-10-28, Head of Digital Channels, on the advice of the Data
+Protection Officer, at the kick-off (<<meeting-2026-10-28-kickoff>>).
+
+Context:: Contact-center transcripts contain the answers agents actually give. Fine-tuning a model on
+them was suggested as a way to make the assistant sound like the bank.
+
+Alternatives::
+* Fine-tune on transcripts.
+* Retrieval over approved content, with the style set by the system prompt.
+
+Decision:: Rejected. Transcripts contain personal data, and agents' answers are not approved
+content: a model trained on them would learn their mistakes and could reproduce personal data.
+Retrieval over approved content gives traceable answers that are corrected by correcting the
+content.
+
+Consequences:: No customer data is used for training (<<data-principles>>). Transcripts may still be
+used, anonymized, to write the golden question set.
+
+Related:: <<adr-002>>.
