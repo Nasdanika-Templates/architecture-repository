@@ -1,7 +1,7 @@
 = Architecture Repository: Architecture as Code with AI Assistance
 Pavel Vlasov
 :doctype: book
-:description: A Git-based architecture repository compiled from AsciiDoc into one versioned document, HTML and PDF, maintained with an AI assistant and aligned with TOGAF ADM, C4, PMP/CPMAI and AI governance.
+:description: A Git-based architecture repository compiled from AsciiDoc into one versioned document, HTML and PDF, maintained with an AI assistant and aligned with TOGAF ADM, C4 and PMP/CPMAI, with mappings to AI governance frameworks.
 :keywords: architecture repository, architecture as code, AsciiDoc, AI assistant, TOGAF, ADM, C4 model, ADR, PMP, CPMAI, AI governance, AIGP
 :lang: en
 :sectnums:

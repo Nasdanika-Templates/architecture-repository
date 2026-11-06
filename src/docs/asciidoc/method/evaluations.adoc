@@ -6,7 +6,8 @@ slides and wikis the evaluation is a table typed once, and the decision quotes i
 score changes, because a vendor answered a question or a benchmark came back, nobody retypes the
 table, and the decision goes on citing a ranking that no longer holds.
 
-Here, evaluations are data in the repository, and the document is their reporting surface.
+Here, evaluations are data in the repository, and the document is their reporting surface. They are
+also a small working example of the model-driven direction described in <<models>>.
 
 [#evaluations-as-data]
 == Evaluations as Data

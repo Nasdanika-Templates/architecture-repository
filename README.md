@@ -20,7 +20,8 @@ The document explains the approach and shows it at work:
   "reactive" decisions, proofs of concept and spikes that feed the evaluations, with code snippets
   included from sources that ran, organization baselines of the approved cloud offerings, external
   information pulled at build time, branding, the prompts, and the
-  alignment with TOGAF ADM, C4, PMP/CPMAI and AI governance (AIGP, NIST AI RMF, EU AI Act).
+  alignment with TOGAF ADM, C4 and PMP/CPMAI, with mappings to AI governance frameworks (AIGP, NIST
+  AI RMF, EU AI Act) that a specialist has not reviewed.
 - **Part II, Sample Architecture:** an AI chat assistant added to the Internet Banking System of the
   C4 model's example, on Azure OpenAI, organized by ADM phase, with C4 diagrams, ranked alternatives
   for the solution pattern, the embedding model and the chat model, an organization baseline, AI

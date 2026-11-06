@@ -105,3 +105,17 @@ Generated files are never edited by hand (<<regenerate-dont-patch>>). They live 
 `target/` directory, or in a directory of their own marked as generated, and the hand-written text
 refers to them by cross-reference. The external information in <<external-information>> is a
 special case of the same pattern.
+
+AsciiDoc is a step, not the destination. Markdown puts text under version control; AsciiDoc adds
+structure and a document that compiles. The next step is to capture more of the problem domain in
+models: data with a defined structure, from which documents are generated and against which the
+build runs validations.
+
+Evaluations are a small working example (<<evaluations>>). They are data, their reports are
+generated, and the build rejects a missing score, a score out of range or inconsistent AHP
+comparisons. The same pattern extends to whatever matters in your domain, such as requiring an
+automated evaluation to record how its scorer was calibrated, with the fields and rules defined by
+the people who know that domain.
+
+The template implements this for evaluations only. The idea of treating rules as data is inspired
+by Nasdanika Rules, a model-based inspection framework, which the template does not use.

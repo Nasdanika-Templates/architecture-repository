@@ -1,6 +1,10 @@
 [#ai-risk]
 = AI Risk and Governance
 
+NOTE: This chapter was drafted with an AI assistant and has not been reviewed by an AI governance,
+legal or measurement specialist. It shows where this content goes in the repository, not what any
+framework or regulation requires. Check it with your own specialists.
+
 _CPMAI Phases V and VI. NIST AI RMF: Govern, Map, Measure, Manage._
 
 [#risk-classification]
@@ -15,7 +19,7 @@ The classification is for the AI Governance Board to confirm (<<adr-011>>).
 Model risk management::
 Whether the assistant is a model under the bank's model risk policy, and so subject to independent
 validation, is an open question for Model Risk Management (<<oq-07>>). The design assumes it will
-be: the evaluation plan below is written to be the basis of a validation.
+be, so the evaluation plan below is a starting point for Model Risk Management to review.
 
 [#govern]
 == Govern: Roles

@@ -1,5 +1,9 @@
 [#ai-governance]
-= AI Governance Alignment
+= AI Governance Mappings
+
+NOTE: This chapter was drafted with an AI assistant and has not been reviewed by an AI governance,
+legal or measurement specialist. It shows where this content goes in the repository, not what any
+framework or regulation requires. Check it with your own specialists.
 
 An AI system needs the evidence of AI governance: what the system is for, what it may not do, which
 risks were identified, how they are mitigated and measured, who accepted the rest, and how the
@@ -46,13 +50,14 @@ confabulation and information security, which make a good checklist.
 
 ISO/IEC 42001::
 The management system standard for AI. If the organization is certified or intends to be, the
-document is evidence for the system-level controls: impact assessment, data, documentation,
-monitoring.
+document may support the system-level controls, such as impact assessment, data, documentation and
+monitoring. Ask whoever owns the certification.
 
 EU AI Act::
-Classifies AI systems by risk. A customer-facing chat assistant that informs and does not decide,
-such as the sample, typically carries transparency obligations: users must know they are talking to
-an AI. Credit decisions are high-risk. Record the classification and its reasoning as a decision.
+Classifies AI systems by risk. The sample proposes that a customer-facing chat assistant that informs
+and does not decide carries transparency obligations, and that evaluating creditworthiness would make
+it high-risk. Ask your legal and compliance functions to confirm the classification of your system,
+and record it and its reasoning as a decision.
 
 Model risk management in banking::
 Banking regulators expect models to be inventoried, validated independently and monitored, for
